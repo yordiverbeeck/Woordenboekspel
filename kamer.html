@@ -18,8 +18,27 @@
         <h5 id="roomname" class="display-5 text-center text-muted"></h5>
         <h1 id="word" class="display-3 text-center">WOORD HIER</h1>
         <div class="maindisplay">
-            <ol id="wordExplanation">
+            <ol id="wordExplanation" class="mode" data-mode="displayWords">
             </ol>
+
+            <div class="container mode" data-mode="enterWord">
+                <div class="form-group">
+                    <label for="woordinput">Het is nu aan jou! Wat is het volgende woord?</label>
+                    <textarea class="form-control" id="woordinput" rows="1"></textarea>
+                </div>
+                <div id="submitWoord" class="btn btn-primary text-center disabled" data-toggle="tooltip" data-placement="bottom" title="Ben je zeker?">Stuur op!</div>
+            </div>
+
+            <div class="container mode" data-mode="enterBetekenis">
+                <div class="form-group">
+                    <label for="betekenisinput">Wat is de betekenis van <span class="theword"></span>?</label>
+                    <textarea class="form-control" id="betekenisinput" rows="3"></textarea>
+                </div>
+                <div id="submitBetekenis" class="btn btn-primary text-center disabled" data-toggle="tooltip" data-placement="bottom" title="Geen zorgen, na het opsturen houden we dit nog even geheim.">Stuur op!</div>
+                <p class="text-muted text-center wordOwnerOnly" id="resetWord">Als ze het woord al kennen, <a href="#" >klik dan hier</a> om een ander woord te kiezen.</p>
+            </div>
+            
+
         </div>
         <div class="people">
             <div class="left">
