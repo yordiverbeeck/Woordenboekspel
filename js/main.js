@@ -2,7 +2,7 @@ $(document).ready(function() {
 	var currentRoom = "27cPsHOUnJzK54esCE1Y";
 	var allUsers = [];
 	var currentWord = "";
-	var me = "";//current user
+	var me = "3zNkVbY79zIzUp2csQCi";//current user
 
 	
 
@@ -12,8 +12,12 @@ $(document).ready(function() {
 	//listen to room updates
 	db.collection("rooms").doc(currentRoom)
 	.onSnapshot(function(snap) {
+        //TODO: do a bunch of other stuff here first
+        //create a user if they have none
+
         $("#roomname").text(snap.data().roomname);
    		$("#ronde").text("Ronde "+snap.data().huidigWoord)
+
     });
 
 	//listen to all user updates & scores and shit	
@@ -43,11 +47,52 @@ $(document).ready(function() {
        		
        		//if it changed, listen to the current word
 	       	if(currentWord != doc.data().woord){
-       			$("#word,span.theword").text(doc.data().woord);
 
        			$(".deelnemers > div").removeClass('wordOwner');
        			$(".deelnemers > div[data-userid='"+doc.data().wordOwner+"']").addClass('wordOwner');
 
+       			//handle status
+		   		if(doc.data().status){
+
+		   			//NEW status
+					if(doc.data().status == "new"){
+						$(".mode").css('display', 'none');
+						if(doc.data().wordOwner == me){
+       						$("#word,span.theword").text("Even geduld...");
+							$("#woordinput").val("");
+							$("#submitWoord").addClass('disabled');
+							$(".mode[data-mode='enterWord']").css('display', 'block');
+						}else{
+							$(".mode[data-mode='wachten']").css('display', 'block');	
+						}
+
+					//WRITING status
+					}else if(doc.data().status == "writing"){
+       					$("#word,span.theword").text(doc.data().woord);
+						$(".mode").css('display', 'none');
+						//$(".mode[data-mode='enterWord']").css('display', 'block');
+						
+					//PICKING status
+					}else if(doc.data().status == "picking"){
+       					$("#word,span.theword").text(doc.data().woord);
+						$(".mode").css('display', 'none');
+						//$(".mode[data-mode='enterWord']").css('display', 'block');
+						
+					//FINISHING status
+					}else if(doc.data().status == "picking"){
+       					$("#word,span.theword").text(doc.data().woord);
+						$(".mode").css('display', 'none');
+						//$(".mode[data-mode='enterWord']").css('display', 'block');
+						
+					}
+		   		}else{
+
+		   		}
+
+
+
+
+       			//get all words -> for voting round
 	       		db.collection("rooms").doc(currentRoom)
 				.collection("woorden").doc(doc.id).collection("submissions")
 				.onSnapshot(function(submissions) {
