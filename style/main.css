@@ -1,0 +1,135 @@
+*{
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+html,
+body {
+	height: 100%;
+}	
+body {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-align: center;
+	align-items: center;
+	padding-top: 40px;
+	padding-bottom: 40px;
+	background-color: #f5f5f5;
+}
+.btn-primary{
+	background-color: #3f00ff;
+	border-color: #3f00ff;
+}
+.btn-primary:hover{
+	background-color: #5e29ff;
+	border-color: #5e29ff;
+}
+.btn.btn-link{
+	color: #4ddaff;
+}
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 40px; /* Set the fixed height of the footer here */
+	line-height: 40px; /* Vertically center the text there */
+	background-color: #efefef;
+	font-size: 10px;
+}
+
+/*----- SPEL -----*/
+#game{
+	display: block;
+	width: 100%;
+	height: 100vh;
+}
+#game > .maindisplay{
+	background-color: white;
+	position: relative;
+	width: 47%;
+	left: 1.5%;
+	height: 80%;
+	min-width: 500px;
+	margin: 0 auto;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+#wordExplanation{
+	padding: 10px 15px 20px ;
+	font-size: 1.5em;
+	line-height: 2.4em;
+}
+	#wordExplanation > li{
+		border-bottom: 1px solid #4ddaffa6;
+		list-style-position: inside;
+		padding: 0 10px;
+	}
+		#wordExplanation > li:last-of-type{
+			border-bottom: unset;
+		}
+		#wordExplanation > li:hover{
+			background-color: #fbfbfb;
+		    cursor: pointer;
+		}
+#ronde{
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 5px 10px;
+	background-color: #aaa;
+	font-weight: 700;
+	color: #424242;
+	opacity: 0.8;
+	border-bottom-left-radius: 10px;
+}
+#game > .people{
+	height: 80%;
+	top: 10%;
+	position: absolute;
+	display: block;
+	width: 24%;
+	/* background-color: grey; */
+}
+	#game > .people > div{
+		position: relative;
+		top: 50%;
+		transform: translateY(-50%);
+		height: fit-content;
+		display: grid;
+	}
+	#game > .people > div > div > div{
+		width: 100%;
+		display: inline-block;
+		float: left;
+		position: relative;
+		height: 60px;
+		background-color: lightgray;
+	}
+	#game > .people > div > div > div.selected{
+		background-color: #44d0f5;
+	}
+		#game > .people > div > div > div > h3{
+			line-height: 60px;
+			top: 0;
+			left: 0;
+			right: 0;
+			text-align: center;
+			position: absolute;
+			z-index: 1000;
+			width: 100%;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			padding: 0 10px;
+		}
+		#game > .people > div > div > div > h4.score{
+			line-height: 60px;
+			right: -50px;
+			position: absolute;
+			z-index: 1000;
+			text-align: left;
+			padding: 0 5px;
+			width: 50px;
+			font-weight: 700;
+		}

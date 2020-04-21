@@ -1,32 +1,90 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Woordenboekspel</title>
+    <title>Woordenboekspel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style/main.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <style>
+    	.form-signin {
+			width: 100%;
+			max-width: 400px;
+			padding: 15px;
+			margin: auto;
+		}
+		.form-signin .checkbox {
+			font-weight: 400;
+		}
+		.form-signin .form-control {
+			position: relative;
+			box-sizing: border-box;
+			height: auto;
+			padding: 10px;
+			font-size: 16px;
+		}
+		.form-signin .form-control:focus {
+			z-index: 2;
+		}
+		.form-signin input[type="text"] {
+			margin-bottom: 10px;
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
+		}
+    </style>	
 </head>
-<body>
-  
-  <!-- The core Firebase JS SDK is always required and must be listed first -->
-  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
 
-  <!-- TODO: Add SDKs for Firebase products that you want to use
-  https://firebase.google.com/docs/web/setup#available-libraries -->
-  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-analytics.js"></script>
+<body class="text-center">
+	<div class="container">
+		<div class="row justify-content-md-center">
+			<img class="mb-2" src="images/woordenboekspel.png" alt="" width="500">
+		</div>
+		<div class="row">
+		    <form class="form-signin">
+		        <h1 class="h3 mb-3 font-weight-normal">Welgekomen, jij daar!</h1>
+		        <a href="kamer.html" class="btn btn-lg btn-primary btn-block">Maak een kamer</a>
+		        <p class="mt-3 mb-1">OF treed toe in een bestaande kamer</p>
+		        <label for="inputRoomID" class="sr-only">Kamer nummer</label>
+		        <input type="text" id="inputRoomID" class="form-control" placeholder="Kamer nummer" required="" autofocus="">
+		        <label for="inputPassword" class="sr-only">Toegangscode</label>
+		        <input type="text" id="inputPassword" class="form-control" placeholder="Toegangscode" required="">
+		        <a href="#" class="btn btn-lg btn-primary btn-block">Treed toe</a>
+		        <p class="mt-5 mb-3 text-muted">Groetjes Yordi Verbeeck</p>
+		    </form>
+		</div>
+	</div>
+    <footer class="footer">
+		<div class="container">
+			<span class="text-muted">Door jouw liefste kapoen, Yordi Verbeeck</span>
+		</div>
+    </footer>
 
-  <script>
+
+
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+	https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-analytics.js"></script>
+    <script>
     // Your web app's Firebase configuration
     var firebaseConfig = {
-      apiKey: "AIzaSyB1S5WKU4vVJHON2sEp1fk2hu0zH_Cxa0g",
-      authDomain: "woordenboekspel-a120d.firebaseapp.com",
-      databaseURL: "https://woordenboekspel-a120d.firebaseio.com",
-      projectId: "woordenboekspel-a120d",
-      storageBucket: "woordenboekspel-a120d.appspot.com",
-      messagingSenderId: "6191639396",
-      appId: "1:6191639396:web:9cbdf498bdc2fea47e6871",
-      measurementId: "G-X1MWL08VFS"
+        apiKey: "AIzaSyB1S5WKU4vVJHON2sEp1fk2hu0zH_Cxa0g",
+        authDomain: "woordenboekspel-a120d.firebaseapp.com",
+        databaseURL: "https://woordenboekspel-a120d.firebaseio.com",
+        projectId: "woordenboekspel-a120d",
+        storageBucket: "woordenboekspel-a120d.appspot.com",
+        messagingSenderId: "6191639396",
+        appId: "1:6191639396:web:9cbdf498bdc2fea47e6871",
+        measurementId: "G-X1MWL08VFS"
     };
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
-  </script>
+    </script>
 </body>
+
 </html>
