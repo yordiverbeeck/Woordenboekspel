@@ -18,15 +18,24 @@
         <h5 id="roomname" class="display-5 text-center text-muted"></h5>
         <h1 id="word" class="display-3 text-center">Loading...</h1>
         <div class="maindisplay">
-            <ol id="wordExplanation" class="mode" data-mode="displayWords">
-            </ol>
+            <div class="container mode mode" data-mode="displayWords">
+                <ol id="wordExplanation">
+                </ol>
+
+                <div id="selectBetekenis" class="btn btn-primary text-center btn-submit disabled" data-toggle="tooltip" data-placement="bottom" title="De tafel plakt na het klikken op deze knop!">Submit</div>
+
+                <div id="nextRound" class="btn btn-primary text-center btn-submit wordOwnerOnly bottomText" data-toggle="tooltip" data-placement="top" title="">Volgende ronde!</div>
+
+                <p class="text-muted text-center bottomText">Stemmen maar!</p>
+            </div>
+
 
             <div class="container mode mt-3" data-mode="enterWord">
                 <div class="form-group">
                     <label for="woordinput">Het is nu aan jou! Wat is het volgende woord?</label>
                     <textarea class="form-control" id="woordinput" rows="1"></textarea>
                 </div>
-                <div id="submitWoord" class="btn btn-primary text-center disabled" data-toggle="tooltip" data-placement="bottom" title="Ben je zeker?">Stuur op!</div>
+                <div id="submitWoord" class="btn btn-primary btn-submit text-center disabled" data-toggle="tooltip" data-placement="bottom" title="Ben je zeker?">Stuur op!</div>
             </div>
 
             <div class="container mode mt-3" data-mode="enterBetekenis">
@@ -34,8 +43,8 @@
                     <label for="betekenisinput">Wat is de betekenis van <span class="theword"></span>?</label>
                     <textarea class="form-control" id="betekenisinput" rows="3"></textarea>
                 </div>
-                <div id="submitBetekenis" class="btn btn-primary text-center disabled" data-toggle="tooltip" data-placement="bottom" title="Geen zorgen, na het opsturen houden we dit nog even geheim.">Stuur op!</div>
-                <p class="text-muted text-center wordOwnerOnly" id="resetWord">Als ze het woord al kennen, <a href="#" >klik dan hier</a> om een ander woord te kiezen.</p>
+                <div id="submitBetekenis" class="btn btn-primary btn-submit text-center disabled" data-toggle="tooltip" data-placement="bottom" title="Geen zorgen, na het opsturen houden we dit nog even geheim.">Stuur op!</div>
+                <p class="text-muted text-center wordOwnerOnly bottomText" id="resetWord">Als ze het woord al kennen, <a href="#" >klik dan hier</a> om een ander woord te kiezen.</p>
             </div>
             
             <div class="container mode mt-3" data-mode="wachten">

@@ -16,7 +16,7 @@ body {
 	padding-bottom: 40px;
 	background-color: #f5f5f5;
 }
-.btn-primary{
+/* .btn-primary{
 	background-color: #3f00ff;
 	border-color: #3f00ff;
 }
@@ -24,7 +24,7 @@ body {
 	background-color: #5e29ff;
 	border-color: #5e29ff;
 }
-.btn.btn-link{
+ */.btn.btn-link{
 	color: #4ddaff;
 }
 
@@ -74,6 +74,12 @@ body {
 		}
 		#wordExplanation > li.selected{
 			background-color: #4ddaffa6;
+		}
+		#wordExplanation > li.correct{
+			background-color: #7fff92;
+		}
+		#wordExplanation > li > span.text-muted{
+			font-size: 12px;
 		}
 #ronde{
 	position: absolute;
@@ -153,7 +159,7 @@ span.theword{
 .disabled:hover{
 	cursor: default;
 }
-#submitBetekenis,#submitWoord{
+.btn-submit{
 	width: 50%;
 	text-align: center;
 	display: block;
@@ -162,9 +168,13 @@ span.theword{
 .wordOwnerOnly{
 	display: none;
 }
-#resetWord{
+#resetWord,.bottomText{
     position: absolute;
-    bottom: 0;
+    bottom: 10px;
     left: 0;
     right: 0;
+    display: none;
+}
+.mode{
+	display: none;
 }
