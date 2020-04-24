@@ -148,6 +148,9 @@ body {
 			width: 50px;
 			font-weight: 700;
 		}
+	.deelnemers > div:hover{
+		cursor: pointer;
+	}
 
 span.theword{
 	font-weight: 700;
@@ -168,7 +171,7 @@ span.theword{
 .wordOwnerOnly{
 	display: none;
 }
-#resetWord,.bottomText{
+.bottomText{
     position: absolute;
     bottom: 10px;
     left: 0;
