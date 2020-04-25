@@ -4,27 +4,39 @@ $(document).ready(function() {
 	var currentWordID = "";
 	var currentWordOwner = "";
 	var currentStatus = ""; 
-	var me = "9uyEjlo2ZU1L8wjxqotB"; //current user
+	var me = ""; //current user
 	var selectedDefinition="";
 	var voted = false;
 	//room and user handling
 	if(getUrlVars()["kamer"] && getUrlVars()["kamer"].length > 15){
 		currentRoom=getUrlVars()["kamer"];
+
+		//listen to room updates
+		db.collection("rooms").doc(currentRoom)
+		.onSnapshot(function(snap) {
+	        if(snap.exists){
+		        //create a user if they have none
+		        $("#roomname").text(snap.data().roomname);
+		   		$("#ronde").text("Ronde "+snap.data().huidigWoord);
+		   	}else{
+		   		alert("room does not exist, redirect");
+		   		//window.location.href = "index.html";
+		   	}
+	    },function(error) {
+			handleError(error);
+		});
+
 		if(localStorage.getItem("WBS-"+getUrlVars()["kamer"])){
 			//perhaps valid room, loged in
 			me = localStorage.getItem("WBS-"+getUrlVars()["kamer"]);
 		}else{
-			//perhaps valid room, not logged in yet
-			//check valid room
-			//login user
+			alert("username not found, redirect");
+			//window.location.href = "index.html";
 		}
 	}else{
 		//no room given, redirect!
 		window.location.href = "index.html";
-	}
-
-	//check in local storage if user has room session things
-	
+	}	
 
 	var randomTekstje=[
 		"Wow zo realistisch!",
@@ -45,17 +57,6 @@ $(document).ready(function() {
 	//listener
 	var wordsListener;
 
-	//listen to room updates
-	db.collection("rooms").doc(currentRoom)
-	.onSnapshot(function(snap) {
-        //TODO: do a bunch of other stuff here first
-        //create a user if they have none
-        $("#roomname").text(snap.data().roomname);
-   		$("#ronde").text("Ronde "+snap.data().huidigWoord);
-    },function(error) {
-		handleError(error);
-	});
-
 	//listen to all user updates & scores and shit	
 	db.collection("rooms").doc(currentRoom)
 	.collection("users").orderBy("createdDate","desc").where("allowed","==",true)
@@ -68,7 +69,7 @@ $(document).ready(function() {
         		"punten":doc.data().punten,
         	};
         	userHtml+=`<div data-userid="${doc.id}">
-                        <h3>${doc.data().username}</h3><h4 class="text-muted score">${doc.data().punten}</h4>
+                        <h3>${doc.data().username} ${doc.id == me ?" (you)":''}</h3><h4 class="text-muted score">${doc.data().punten}</h4>
                     </div>`;
         });
         $(".deelnemers").html(userHtml);

@@ -44,11 +44,16 @@
 		<div class="row">
 		    <form class="form-signin">
 		        <h1 class="h3 mb-3 font-weight-normal">Welgekomen, jij daar!</h1>
-		        <a href="#" id="createRoom" class="btn btn-lg btn-primary btn-block">Maak een kamer</a>
-		        <p class="mt-3 mb-1">OF treed toe in een bestaande kamer</p>
+		        <label for="username" class="sr-only">Wat is je username?</label>
+		        <input type="text" id="username" class="form-control" placeholder="Username" required="" autofocus="">
+
 		        <label for="inputRoomID" class="sr-only">Kamer nummer</label>
 		        <input type="text" id="inputRoomID" class="form-control" placeholder="Kamer nummer" required="" autofocus="">
 		        <a href="#" id="betreedKamer" class="btn btn-lg btn-primary btn-block disabled">Betreed kamer</a>
+
+		        <p class="mt-3 mb-2 ">OF maak een nieuwe kamer</p>
+
+		        <a href="#" id="createRoom" class="btn btn-lg btn-sm btn-primary btn-block disabled">Maak een kamer</a>
 		        <p class="mt-5 mb-3 text-muted" id="errorlog"></p>
 		    </form>
 		</div>
@@ -60,10 +65,7 @@
     </footer>
 
 
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-	https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-firestore.js"></script>
     <script>
@@ -95,9 +97,31 @@
         			huidigWoord:1,
         			roomname: "",
         			timeStamp:new Date,
-        			status:"new"
+        			status:"new",
+        			shortroom:makeid(8)
         		}).then(function(docRef){
-        			window.location.href ="kamer.html?kamer="+docRef.id;
+        			//make user before redirect
+        			console.log("roomid: "+docRef.id);
+        			db.collection("rooms").doc(docRef.id).collection("users").add({
+	        			allowed: true,
+	        			createdDate: new Date,
+	        			punten:0,
+	        			username: $("#username").val().length!=0 ? $("#username").val() : "user-"+makeid(4),
+	        			admin:true
+	        		}).then(function(userdocRef){
+	        			//make user before redirect
+	        			console.log("roomid: "+userdocRef.id);
+	        			localStorage.setItem("WBS-"+docRef.id,userdocRef.id);
+	        			if(localStorage.getItem("WBS-"+docRef.id)==userdocRef.id){
+	        				window.location.href ="kamer.html?kamer="+docRef.id;
+	        			}else{
+	        				alert("kan storage niet zetten :'( De serverowner wordt genotificeerd.");
+	        				console.log("can't set localStorage");
+	        			}
+	        		}).catch(function(error) {
+						console.error("Error creating user: ", error);
+						alert("Er ging ergens iets mis, sorry!");
+					});
         		}).catch(function(error) {
 					console.error("Error adding document: ", error);
 					$("#createRoom").text("Maak een kamer");
@@ -108,27 +132,74 @@
         		if(!$(this).hasClass('disabled')){
         			$("#betreedKamer").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 					var enteredId = $("#inputRoomID").val();
-					db.collection('rooms').doc(enteredId).get().then(function(doc){
-						if(doc.exists){
-							window.location.href ="kamer.html?kamer="+doc.id;
+					db.collection('rooms').where('shortroom',"==",enteredId).orderBy('startedAt','desc').get().then(function(querySnapshot){
+						if(!querySnapshot.empty){ 
+							querySnapshot.forEach(function(doc) {	   			
+								//make user before redirect
+								db.collection("rooms").doc(doc.id).collection("users").add({
+				        			allowed: true,
+				        			createdDate: new Date,
+				        			punten:0,
+				        			username: $("#username").val().length!=0 ? $("#username").val() : "user-"+makeid(4),
+				        			admin:false
+				        		}).then(function(userdocRef){
+				        			//make user before redirect
+				        			console.log("roomid: "+userdocRef.id);
+				        			localStorage.setItem("WBS-"+doc.id,userdocRef.id);
+				        			if(localStorage.getItem("WBS-"+doc.id)==userdocRef.id){
+				        				window.location.href ="kamer.html?kamer="+doc.id;
+				        			}else{
+				        				alert("kan storage niet zetten :'( De serverowner wordt genotificeerd.");
+				        				console.log("can't set localStorage");
+				        			}
+				        		}).catch(function(error) {
+									console.error("Error creating user: ", error);
+									alert("Er ging ergens iets mis, sorry!");
+								});
+							
+							}).catch(function(error) {
+								console.error("Error finding document: ", error);
+								$("#betreedKamer").text("Betreed kamer");
+							});
 						}else{
 							$("#errorlog").text("Invalid room!");
 							$("#betreedKamer").text("Betreed kamer");
+							console.log("room not found... "+enteredId)
 						}
-					}).catch(function(error) {
-						console.error("Error adding document: ", error);
-						$("#betreedKamer").text("Betreed kamer");
 					});
-
         		}
         	}).on('keyup', '#inputRoomID', function(event) {
         		event.preventDefault();
-        		if($(this).val().length !=0)
+        		if($(this).val().length !=0 && $("#username").val().length != 0)
 		            $('#betreedKamer').removeClass('disabled');   
 		        else
 		            $('#betreedKamer').addClass('disabled');
+	       	}).on('keyup', '#username', function(event) {
+        		event.preventDefault();
+        		if($(this).val().length !=0){
+	           		$('#createRoom').removeClass('disabled');
+        			if($("#inputRoomID").val().length != 0){
+		           		$('#betreedKamer').removeClass('disabled');
+		           	}
+        		}
+		        else{
+		        	$('#createRoom').addClass('disabled');
+        			if($("#inputRoomID").val().length != 0){
+		           		$('#betreedKamer').addClass('disabled');
+		           	}
+		        }
 	       	});
 
+
+        	function makeid(length) {
+			   var result           = '';
+			   var characters       = 'abcdefghijklmnopqrstuvwxyz0123456789';
+			   var charactersLength = characters.length;
+			   for ( var i = 0; i < length; i++ ) {
+			      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+			   }
+			   return result;
+			}
 		});
     </script>
 </body>
