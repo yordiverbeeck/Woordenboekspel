@@ -139,9 +139,9 @@
 								db.collection("rooms").doc(doc.id).collection("users").add({
 				        			allowed: true,
 				        			createdDate: new Date,
-				        			punten:0,
+				        			punten: 0,
 				        			username: $("#username").val().length!=0 ? $("#username").val() : "user-"+makeid(4),
-				        			admin:false
+				        			admin: false
 				        		}).then(function(userdocRef){
 				        			//make user before redirect
 				        			console.log("roomid: "+userdocRef.id);
@@ -156,7 +156,6 @@
 									console.error("Error creating user: ", error);
 									alert("Er ging ergens iets mis, sorry!");
 								});
-							
 							}).catch(function(error) {
 								console.error("Error finding document: ", error);
 								$("#betreedKamer").text("Betreed kamer");

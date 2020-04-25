@@ -18,9 +18,10 @@ $(document).ready(function() {
 		        //create a user if they have none
 		        $("#roomname").text(snap.data().roomname);
 		   		$("#ronde").text("Ronde "+snap.data().huidigWoord);
+		   		$("#toevoegen span").text(snap.data().shortroom);
 		   	}else{
 		   		alert("room does not exist, redirect");
-		   		//window.location.href = "index.html";
+		   		window.location.href = "index.html";
 		   	}
 	    },function(error) {
 			handleError(error);
@@ -31,7 +32,7 @@ $(document).ready(function() {
 			me = localStorage.getItem("WBS-"+getUrlVars()["kamer"]);
 		}else{
 			alert("username not found, redirect");
-			//window.location.href = "index.html";
+			window.location.href = "index.html";
 		}
 	}else{
 		//no room given, redirect!
