@@ -53,11 +53,14 @@
 
 		        <label for="inputRoomID" class="sr-only">Kamer nummer</label>
 		        <input type="text" id="inputRoomID" class="form-control" placeholder="Kamer nummer" required="" autofocus="">
-		        <a href="#" id="betreedKamer" class="btn btn-lg btn-primary btn-block disabled">Betreed kamer</a>
+		        <div class="usernametooltip" data-toggle="tooltip" title="Vul een username in om verder te gaan">
+		        	<a href="#" id="betreedKamer" class="btn btn-lg btn-primary btn-block disabled">Betreed kamer</a>
+		        </div>
 
 		        <p class="mt-3 mb-2 ">OF maak een nieuwe kamer</p>
-
-		        <a href="#" id="createRoom" class="btn btn-lg btn-sm btn-primary btn-block disabled">Maak een kamer</a>
+		        <div class="usernametooltip"  data-toggle="tooltip" title="Vul een username in om verder te gaan">
+		        	<a href="#" id="createRoom" class="btn btn-lg btn-sm btn-primary btn-block disabled usernametooltip">Maak een kamer</a>
+		        </div>
 		        <p class="mt-5 mb-3 text-muted" id="errorlog"></p>
 		    </form>
 		</div>
@@ -93,6 +96,10 @@
         	if($("#inputRoomID").val()!=""){
 		        $('#betreedKamer').removeClass('disabled');   
         	}
+
+        	$(".usernametooltip").tooltip({
+        		placement:'bottom'
+        	});
 
         	$(document).on('click', '#createRoom', function(event) {
         		event.preventDefault();
@@ -173,20 +180,24 @@
         		}
         	}).on('keyup', '#inputRoomID', function(event) {
         		event.preventDefault();
-        		if($(this).val().length !=0 && $("#username").val().length != 0)
-		            $('#betreedKamer').removeClass('disabled');   
-		        else
+				$("#username").val().length != 0 ? $(".usernametooltip").tooltip('disable') : $(".usernametooltip").tooltip('enable'); 
+        		if($(this).val().length !=0 && $("#username").val().length != 0){
+		            $('#betreedKamer').removeClass('disabled'); 
+		        }else{
 		            $('#betreedKamer').addClass('disabled');
+    			}
 	       	}).on('keyup', '#username', function(event) {
         		event.preventDefault();
         		if($(this).val().length !=0){
 	           		$('#createRoom').removeClass('disabled');
+    				$(".usernametooltip").tooltip('disable');  
         			if($("#inputRoomID").val().length != 0){
 		           		$('#betreedKamer').removeClass('disabled');
 		           	}
         		}
 		        else{
 		        	$('#createRoom').addClass('disabled');
+    				$(".usernametooltip").tooltip('enable');  
         			if($("#inputRoomID").val().length != 0){
 		           		$('#betreedKamer').addClass('disabled');
 		           	}
