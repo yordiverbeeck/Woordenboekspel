@@ -33,13 +33,17 @@
 			border-top-left-radius: 0;
 			border-top-right-radius: 0;
 		}
+		#logo > img:hover{
+			cursor: pointer;
+		}
     </style>	
 </head>
 
 <body class="text-center">
 	<div class="container">
-		<div class="row justify-content-md-center">
+		<div class="row justify-content-md-center" id="logo">
 			<img class="mb-2" src="images/woordenboekspel.png" alt="" width="500">
+			<img style="display: none;" class="mb-2" src="images/whoordenboekspel.png" alt="" width="500">
 		</div>
 		<div class="row">
 		    <form class="form-signin">
@@ -199,6 +203,11 @@
 			   }
 			   return result;
 			}
+
+			$("#logo").click(function(event) {
+				$("#logo > img").toggle();
+			});
+
 		});
     </script>
 </body>
