@@ -92,6 +92,13 @@ $(document).ready(function() {
 
    			currentWordID = doc.id;
    			currentWordOwner = woorddata.wordOwner;
+
+   			//reset
+   			if(currentStatus=="finishing" && woorddata.status=="new"){
+   				$("#betekenisinput,#woordinput").val("");
+   				selectedDefinition="";
+   			}
+
    			currentStatus=woorddata.status;
 			woorddata.wordOwner == me ? $(".wordOwnerOnly").show() : $(".wordOwnerOnly").hide();
 
@@ -162,11 +169,9 @@ $(document).ready(function() {
 						    	$("#selectBetekenis").removeClass('disabled');
 						    });
 					    }
-				       	
 				    },function(error) {
 						handleError(error);
 					});
-
 
 				//FINISHING status
 				}else if(doc.data().status == "finishing"){
@@ -182,16 +187,16 @@ $(document).ready(function() {
 				    	var wordHtml = "";
 				        submissions.forEach(function(submission) {
 				    		var data = submission.data();
-				       		wordHtml+=`<li class="${data.realDefinition ? "correct": ""}" data-definitionid="${submission.id}">${data.uitleg} `;
+				       		wordHtml += `<li class="${data.realDefinition ? "correct": ""}" data-definitionid="${submission.id}">${data.uitleg} `;
 		       				if(data.voted){
 					       		if(data.voted.length == 1){
-									wordHtml+=`<span class="badge badge-primary"> (1 Stem)</span>`;
+									wordHtml += `<span class="badge badge-primary"> (1 Stem)</span>`;
 					       		}else if(data.voted.length > 1){
-									wordHtml+=`<span class="badge badge-primary">(${data.voted.length} Stemmen)</span>`;
+									wordHtml += `<span class="badge badge-primary">(${data.voted.length} Stemmen)</span>`;
 					       		}
 					       	}
-					       	wordHtml+=`<span class="text-muted">Door ${allUsers[submission.id].username}</span>`;
-				       		wordHtml+=`</li>`;
+					       	wordHtml += `<span class="text-muted">Door ${allUsers[submission.id].username}</span>`;
+				       		wordHtml += `</li>`;
 				       	});
 
 				       	$("#wordExplanation").html(wordHtml);
@@ -199,9 +204,7 @@ $(document).ready(function() {
 				    },function(error) {
 						handleError(error);
 					});
-
 				}
-
 	       	}
         });
 
@@ -321,8 +324,8 @@ $(document).ready(function() {
 	    }).on('click', '.deelnemers > div', function(event) {
 	    	event.preventDefault();
     		var selectedDeelnemer = $(this).attr("data-userid");
+    		console.log(selectedDeelnemer,currentWordOwner)
 	    	if(currentStatus=="finishing" && currentWordOwner==me && selectedDeelnemer!=me){
-	    		console.log(selectedDeelnemer);
 	    		db.collection("rooms").doc(currentRoom)
 				.collection("woorden").add({
 					createdDate: new Date,

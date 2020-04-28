@@ -96,7 +96,7 @@
         		db.collection("rooms").add({
         			huidigWoord:1,
         			roomname: "",
-        			timeStamp:new Date,
+        			startedAt:new Date,
         			status:"new",
         			shortroom:makeid(8)
         		}).then(function(docRef){
@@ -133,8 +133,8 @@
         			$("#betreedKamer").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 					var enteredId = $("#inputRoomID").val();
 					db.collection('rooms').where('shortroom',"==",enteredId).orderBy('startedAt','desc').get().then(function(querySnapshot){
-						if(!querySnapshot.empty){ 
-							querySnapshot.forEach(function(doc) {	   			
+						if(!querySnapshot.empty) {
+							querySnapshot.forEach(function(doc) {
 								//make user before redirect
 								db.collection("rooms").doc(doc.id).collection("users").add({
 				        			allowed: true,
