@@ -131,6 +131,7 @@ $(document).ready(function() {
 					$(".mode").hide();
 					$(".mode[data-mode='displayWords']").show();
 					$("#selectBetekenis").addClass('disabled');
+					$("#wordExplanation").text("");
 					
 					//get all words -> for voting round
 		       		db.collection("rooms").doc(currentRoom)
@@ -180,6 +181,7 @@ $(document).ready(function() {
 					$(".mode[data-mode='displayWords']").show();
 					$("#selectBetekenis").hide();
 					$(".bottomText").hide();
+					$("#wordExplanation").text("");
 
 					db.collection("rooms").doc(currentRoom)
 					.collection("woorden").doc(doc.id).collection("submissions")
