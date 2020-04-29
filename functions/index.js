@@ -54,6 +54,8 @@ exports.changeStatus = functions.region('europe-west1').firestore
                             console.log("3) Given 2 to: " + wordAfter.wordOwner);
                         }
 
+                        batch.update(db.collection('rooms').doc("" + context.params.roomID), {huidigWoord: admin.firestore.FieldValue.increment(1)});
+
                     	batch.commit().then(function() {
 		                    console.log("Commit success!");
 		                }).catch(function(error) {
