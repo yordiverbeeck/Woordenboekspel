@@ -43,7 +43,7 @@
 	<div class="container">
 		<div class="row justify-content-md-center" id="logo">
 			<img class="mb-2" src="images/woordenboekspel.png" alt="" width="500">
-			<img style="display: none;" class="mb-2" src="images/whoordenboekspel.png" alt="" width="500">
+			<img class="mb-2" src="images/whoordenboekspel.png" alt="" width="500" style="display: none;">
 		</div>
 		<div class="row">
 		    <form class="form-signin">
@@ -113,6 +113,8 @@
         		}).then(function(docRef){
         			//make user before redirect
         			console.log("roomid: "+docRef.id);
+
+        			//add user
         			db.collection("rooms").doc(docRef.id).collection("users").add({
 	        			allowed: true,
 	        			createdDate: new Date,
@@ -120,19 +122,35 @@
 	        			username: $("#username").val().length!=0 ? $("#username").val() : "user-"+makeid(4),
 	        			admin:true
 	        		}).then(function(userdocRef){
-	        			//make user before redirect
-	        			console.log("roomid: "+userdocRef.id);
-	        			localStorage.setItem("WBS-"+docRef.id,userdocRef.id);
-	        			if(localStorage.getItem("WBS-"+docRef.id)==userdocRef.id){
-	        				window.location.href ="kamer.html?kamer="+docRef.id;
-	        			}else{
-	        				alert("kan storage niet zetten :'( De serverowner wordt genotificeerd.");
-	        				console.log("can't set localStorage");
-	        			}
+
+	        			//add default woord
+	        			db.collection("rooms").doc(docRef.id).collection("woorden").add({
+		        			createdDate: new Date,
+		        			status: "new",
+		        			wordOwner: userdocRef.id,
+		        			woord:""
+		        		}).then(function(newWordRef){
+
+		        			//make user before redirect
+		        			console.log("roomid: "+userdocRef.id);
+		        			localStorage.setItem("WBS-"+docRef.id,userdocRef.id);
+		        			if(localStorage.getItem("WBS-"+docRef.id)==userdocRef.id){
+		        				window.location.href ="kamer.html?kamer="+docRef.id;
+		        			}else{
+		        				alert("kan storage niet zetten :'( De serverowner wordt genotificeerd.");
+		        				console.log("can't set localStorage");
+		        			}
+
+		        		}).catch(function(error) {
+							console.error("Error creating first woorden: ", error);
+							alert("Er ging ergens iets mis, sorry!");
+						});
+
 	        		}).catch(function(error) {
 						console.error("Error creating user: ", error);
 						alert("Er ging ergens iets mis, sorry!");
 					});
+
         		}).catch(function(error) {
 					console.error("Error adding document: ", error);
 					$("#createRoom").text("Maak een kamer");
