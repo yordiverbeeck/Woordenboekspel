@@ -144,7 +144,7 @@ body {
 			text-align: left;
 			position: absolute;
 			z-index: 1000;
-			width: 100%;
+			width: calc(100% - 30px);
 			text-overflow: ellipsis;
 			white-space: nowrap;
 			overflow: hidden;
@@ -216,5 +216,10 @@ span.theword{
 	#game > .people > div > div > div{
 		width: 33.3333%;
 		height: 65px;
+	}
+}
+@media (max-width: 600px){
+	#game > .people > div > div > div{
+		width: 50%;
 	}
 }
