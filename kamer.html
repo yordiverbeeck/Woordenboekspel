@@ -88,11 +88,56 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="watisdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Hiersedaarse!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-justify">
+                    <h4>Wat is dit?</h4>
+                    <p>Dit is het Woordenboekspel! Een gezelschapsspel dat je speelt met vrienden en/of familie. Het bestaat al een tijdje hoor.</p>
+
+                    <h4>Met hoeveel mensen kan ik dit spelen?</h4>
+                    <p><b>Minstens 3!</b> Anders is er niet veel gokken aan hé. Er staat momenteel geen maximum op. Al kan het wel wat lang duren als je met meer dan 100 mensen speelt.</p>
+
+                    <h4>Hoe werkt het Woordenboekspel?</h4>
+                    <p>Je speelt dit spel met <b>gezellige mensen en een woordenboek</b>. Een ronde gaat als volgt: </p><p>1) Iemand kiest een onbekend woord uit het woordenboek en geeft dit door aan de andere. <br>2) Iedereen creatief aan de slag om een definitie van het woord te bedenken. <br>3) Als iedereen klaar is worden alle definities, samen met de echte definitie, op willekeurige volgorde bij gezet. Iedereen kan dan stemmen welke definitie de echte is. <br>4) <i>Vergeet ook niet je goed humeur mee te nemen! haha ha....h</i></p>
+
+                    <h4>Hoe werkt de puntentelling?</h4>
+                    <p>Je kan op 3 manieren punten verdienen. </p><p>1) Je krijgt één punt als je het juiste woord hebt geselecteerd. <br>2) Je krijgt één punt per persoon die jouw definitie als de juiste definitie heeft aangeduid. <br>3) Je krijgt twee punten als niemand bij jouw woord, de echte definitie kon raden.</p>
+
+                    <h4>Wie houd zich hier mee bezig en waarom?</h4>
+                    <p>Ik! Yordi Verbeeck, ik verveelde me en had zin om iets te maken. Ik keek naar de livestreams van Thomas Huyghe waar men dit spel speelde (op een soms nogal klungelige manier #nooffence). Toen ik het ook wilde spelen kwam ik er achter dat er nog geen online versie van bestond. Dan heb ik het zelf maar gemaakt.</p>
+
+                    <h4>'T werkt ni!?</h4>
+                    <p>Ja sorry hoor, stank voor dank noem ik dat!<br> Serieus antwoord: Dit spel staat nog maar net online. (sinds  1 mei 2020...) De kans dat er bugs in zitten of de spelervaring niet optimaal is, is 100%. Je mag alle vormen van feedback doorsturen naar <a href="mailto:hello@yordi.net">hello@yordi.net</a>. Bedankt!</p>
+
+                    <h5 class="text-center text-muted">FLOOR GANG</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <footer class="footer">
-		<div class="container text-center">
-			<span class="text-muted">Door jouw liefste kapoen, Yordi Verbeeck</span>
-		</div>
+        <div class="container position-absolute text-center" style="left:0;right:0">
+            <span class="text-muted">Door jouw liefste kapoen, <a href="https://www.instagram.com/yordinateur/">Yordi Verbeeck</a> van Sjarel</span><br>
+            <span class="text-muted">Geïnspireerd op de livestreams van Thomas Huyghe</span>
+        </div>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn float-right position-absolute" data-toggle="modal" data-target="#watisdit" style="right:0">
+            <svg class="bi bi-question-circle-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M16 8A8 8 0 110 8a8 8 0 0116 0zM6.57 6.033H5.25C5.22 4.147 6.68 3.5 8.006 3.5c1.397 0 2.673.73 2.673 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.355H7.117l-.007-.463c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.901 0-1.358.603-1.358 1.384zm1.251 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z" clip-rule="evenodd"/>
+                </svg>
+        </button>
+
+
     </footer>
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
