@@ -71,6 +71,7 @@ $(document).ready(function() {
         	};
         	userHtml+=`<div class="${currentWordOwner==doc.id ? "wordOwner":""}" data-userid="${doc.id}">
                         <h3>${doc.data().username} ${doc.id == me ?" (you)":''}</h3><h4 class="text-muted score">${doc.data().punten}</h4>
+                        <div class="checkmark"><svg class="bi bi-check-circle" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3-3a.5.5 0 11.708-.708L8 9.293l6.646-6.647a.5.5 0 01.708 0z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M8 2.5A5.5 5.5 0 1013.5 8a.5.5 0 011 0 6.5 6.5 0 11-3.25-5.63.5.5 0 11-.5.865A5.472 5.472 0 008 2.5z" clip-rule="evenodd"></path></svg></div>
                     </div>`;
         });
         $(".deelnemers").html(userHtml);
@@ -78,6 +79,7 @@ $(document).ready(function() {
 		handleError(error);
 	});
 
+	var submissionFunction;
     //listen to all words, select latest	
 	db.collection("rooms").doc(currentRoom)
 	.collection("woorden").orderBy("createdDate","desc").limit(1) //TODO: add create button if none is found
@@ -89,6 +91,7 @@ $(document).ready(function() {
 
    			$(".deelnemers > div").removeClass('wordOwner');
    			$(".deelnemers > div[data-userid='"+woorddata.wordOwner+"']").addClass('wordOwner');
+   			$(".deelnemers > .checkmark").hide();
 
    			currentWordID = doc.id;
    			currentWordOwner = woorddata.wordOwner;
@@ -102,8 +105,14 @@ $(document).ready(function() {
    			currentStatus=woorddata.status;
 			woorddata.wordOwner == me ? $(".wordOwnerOnly").show() : $(".wordOwnerOnly").hide();
 
+
+
    			//handle status
 	   		if(woorddata.status){
+
+				if(submissionFunction instanceof Function){
+        			submissionFunction();
+        		}
 
 	   			//NEW status
 				if(woorddata.status == "new"){
@@ -124,7 +133,19 @@ $(document).ready(function() {
    					$("#word,span.theword").text(woorddata.woord);
 					$(".mode").hide();
 					$(".mode[data-mode='enterBetekenis']").show();
-					
+
+					submissionFunction = db.collection("rooms").doc(currentRoom)
+					.collection("woorden").doc(doc.id).collection("submissions").orderBy("randomOrder","desc")
+					.onSnapshot(function(submissions) {
+				        submissions.forEach(function(submission) {
+				    		$(".deelnemers > div[data-userid='"+submission.id+"'] > div.checkmark").show();
+				       	});
+
+				    },function(error) {
+						handleError(error);
+					});
+
+
 				//PICKING status
 				}else if(woorddata.status == "picking"){
    					$("#word,span.theword").text(woorddata.woord);
@@ -134,7 +155,7 @@ $(document).ready(function() {
 					$("#wordExplanation").text("");
 					
 					//get all words -> for voting round
-		       		db.collection("rooms").doc(currentRoom)
+		       		submissionFunction = db.collection("rooms").doc(currentRoom)
 					.collection("woorden").doc(doc.id).collection("submissions").orderBy("randomOrder","desc")
 					.onSnapshot(function(submissions) {
 				    	var wordHtml="";
@@ -183,8 +204,8 @@ $(document).ready(function() {
 					$(".bottomText").hide();
 					$("#wordExplanation").text("");
 
-					db.collection("rooms").doc(currentRoom)
-					.collection("woorden").doc(doc.id).collection("submissions")
+					submissionFunction = db.collection("rooms").doc(currentRoom)
+					.collection("woorden").doc(doc.id).collection("submissions").orderBy("randomOrder","desc")
 					.onSnapshot(function(submissions) {
 				    	var wordHtml = "";
 				        submissions.forEach(function(submission) {
@@ -326,7 +347,6 @@ $(document).ready(function() {
 	    }).on('click', '.deelnemers > div', function(event) {
 	    	event.preventDefault();
     		var selectedDeelnemer = $(this).attr("data-userid");
-    		console.log(selectedDeelnemer,currentWordOwner)
 	    	if(currentStatus=="finishing" && currentWordOwner==me && selectedDeelnemer!=me){
 	    		db.collection("rooms").doc(currentRoom)
 				.collection("woorden").add({

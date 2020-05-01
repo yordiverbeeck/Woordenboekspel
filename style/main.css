@@ -160,6 +160,14 @@ body {
 			width: 50px;
 			font-weight: 700;
 		}
+		#game > .people > div > div > div > div.checkmark{	
+			position: absolute;
+			top: 25px;
+			height: 30px;
+			right: -25px;
+			color: #007bff;
+			display: none;
+		}
 	.deelnemers > div:hover{
 		cursor: pointer;
 	}
