@@ -69,7 +69,7 @@ $(document).ready(function() {
         		"username":doc.data().username,
         		"punten":doc.data().punten,
         	};
-        	userHtml+=`<div data-userid="${doc.id}">
+        	userHtml+=`<div class="${currentWordOwner==doc.id ? "wordOwner":""}" data-userid="${doc.id}">
                         <h3>${doc.data().username} ${doc.id == me ?" (you)":''}</h3><h4 class="text-muted score">${doc.data().punten}</h4>
                     </div>`;
         });
