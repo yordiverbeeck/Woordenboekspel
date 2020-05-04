@@ -5,7 +5,7 @@ $(document).ready(function() {
 	var currentWordOwner = "";
 	var currentStatus = ""; 
 	var me = ""; //current user
-	var selectedDefinition="";
+	var selectedDefinition=false;
 	var voted = false;
 	//room and user handling
 	if(getUrlVars()["kamer"] && getUrlVars()["kamer"].length > 15){
@@ -69,8 +69,8 @@ $(document).ready(function() {
         		"username":doc.data().username,
         		"punten":doc.data().punten,
         	};
-        	userHtml+=`<div class="${currentWordOwner==doc.id ? "wordOwner":""}" data-userid="${doc.id}">
-                        <h3>${doc.data().username} ${doc.id == me ?" (you)":''}</h3><h4 class="text-muted score">${doc.data().punten}</h4>
+        	userHtml+=`<div class="${currentWordOwner==doc.id ? "wordOwner":""}" data-userid="${doc.id}" title="${doc.data().username}">
+                        <h3>${doc.data().username} ${doc.id == me ?" (jezelf)":''}</h3><h4 class="text-muted score">${doc.data().punten}</h4>
                         <div class="checkmark"><svg class="bi bi-check-circle" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3-3a.5.5 0 11.708-.708L8 9.293l6.646-6.647a.5.5 0 01.708 0z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M8 2.5A5.5 5.5 0 1013.5 8a.5.5 0 011 0 6.5 6.5 0 11-3.25-5.63.5.5 0 11-.5.865A5.472 5.472 0 008 2.5z" clip-rule="evenodd"></path></svg></div>
                     </div>`;
         });
@@ -99,7 +99,7 @@ $(document).ready(function() {
    			//reset
    			if(currentStatus=="finishing" && woorddata.status=="new"){
    				$("#betekenisinput,#woordinput").val("");
-   				selectedDefinition="";
+   				selectedDefinition=false;
    			}
 
    			currentStatus=woorddata.status;
@@ -153,6 +153,7 @@ $(document).ready(function() {
 					$(".mode[data-mode='displayWords']").show();
 					$("#selectBetekenis").addClass('disabled');
 					$("#wordExplanation").text("");
+					$("#nextRound").hide();
 					
 					//get all words -> for voting round
 		       		submissionFunction = db.collection("rooms").doc(currentRoom)
@@ -169,7 +170,7 @@ $(document).ready(function() {
 				    		//if user already voted, hide button
 							voted || woorddata.wordOwner == me ? $("#selectBetekenis").hide() : $("#selectBetekenis").show();
 
-				       		wordHtml+=`<li class="${selectedDefinition == submission.id ? "selected": ""}" data-definitionid="${submission.id}">${data.uitleg} `;
+				       		wordHtml+=`<li class="${selectedDefinition == submission.id ? "selected": ""}" data-definitionid="${submission.id}">${data.uitleg} ${submission.id==me?" (Jouw definitie)":""} `;
 		       				if(data.voted){
 					       		if(data.voted.length == 1){
 									wordHtml+=`<span class="badge badge-primary"> (1 Stem)</span>`;
@@ -186,9 +187,14 @@ $(document).ready(function() {
 					       	$("#wordExplanation > li").click(function(event) {
 						    	event.preventDefault();
 						    	$("#wordExplanation > li").removeClass('selected');
-						    	$(this).addClass('selected');
 						    	selectedDefinition = $(this).attr("data-definitionid");
-						    	$("#selectBetekenis").removeClass('disabled');
+						    	if(selectedDefinition!=me && currentWordOwner != me){
+						    		$(this).addClass('selected');
+						    		$("#selectBetekenis").removeClass('disabled');
+						    	}else{
+									selectedDefinition=false;
+						    		$("#selectBetekenis").addClass('disabled');
+						    	}
 						    });
 					    }
 				    },function(error) {
@@ -335,14 +341,16 @@ $(document).ready(function() {
 	    }).on('click', '#selectBetekenis', function(event) {
 	    	event.preventDefault();
 	    	if(currentStatus=="picking" && selectedDefinition!=me){
-				db.collection("rooms").doc(currentRoom)
-				.collection("woorden").doc(currentWordID)
-				.collection("submissions").doc(selectedDefinition)
-				.update({
-					voted: firebase.firestore.FieldValue.arrayUnion(me)
-				}).catch(function(error) {
-					handleError(error);
-				});
+	    		if(selectedDefinition != false){
+					db.collection("rooms").doc(currentRoom)
+					.collection("woorden").doc(currentWordID)
+					.collection("submissions").doc(selectedDefinition)
+					.update({
+						voted: firebase.firestore.FieldValue.arrayUnion(me)
+					}).catch(function(error) {
+						handleError(error);
+					});
+				}
 			}
 	    }).on('click', '.deelnemers > div', function(event) {
 	    	event.preventDefault();
