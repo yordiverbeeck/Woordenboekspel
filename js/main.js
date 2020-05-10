@@ -366,12 +366,32 @@ $(document).ready(function() {
 					handleError(error);
 				});
 	    	}
+	    }).on('dblclick', '#toevoegen', function(event) {
+	    	event.preventDefault();
+	    	$("#toevoegen").toggleClass("hidden");
 	    });
 
     }
     init();
-	   
-    console.log("user: "+me);
+
+    //console.log("user: "+me);
+
+    $("#toevoegen").click(function(event) {
+		copyToClipboard($("#toevoegen > span:first-of-type()").text());
+		console.log("copied!");
+		$("#toevoegen").attr('data-original-title', "Gekopieerd!").tooltip('show');
+    }).mouseout(function(event) {
+    	$("#toevoegen").attr('data-original-title', "Klik om de code te kopiëren, dubbelklik om ze te verbergen/tonen.");
+    });
+
+
+	function copyToClipboard(text) {
+		var $temp = $("<input>");
+		$("body").append($temp);
+		$temp.val(text).select();
+		document.execCommand("copy");
+		$temp.remove();
+	}
 
     function loading(selector){
     	$(selector).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
@@ -392,4 +412,5 @@ $(document).ready(function() {
 		});
 		return vars;
 	}
+	
 });

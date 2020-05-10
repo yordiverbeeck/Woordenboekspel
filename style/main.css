@@ -204,6 +204,16 @@ span.theword{
 #roomname{
 	display: none;
 }
+#toevoegen{
+	transition: 0.5s all linear;
+}
+	#toevoegen.hidden{
+		opacity: 0.9;
+		filter: blur(5px);
+	}
+	#toevoegen:hover{
+		cursor: pointer;
+	}
 
 @media (max-width: 800px){
 	#game > .maindisplay{
