@@ -1,18 +1,18 @@
 $(document).ready(function() {
-	var currentRoom = "";
+	var currentGame= new Object;
 	var allUsers = [];
-	var currentWordID = "";
-	var currentWordOwner = "";
-	var currentStatus = ""; 
-	var me = ""; //current user
+	var me = ""; //current user, you
 	var selectedDefinition=false;
 	var voted = false;
-	//room and user handling
+
+	var wordsListener,submissionFunction; //listeners
+
+	//room and user handling on init
 	if(getUrlVars()["kamer"] && getUrlVars()["kamer"].length > 15){
-		currentRoom=getUrlVars()["kamer"];
+		currentGame.room=getUrlVars()["kamer"];
 
 		//listen to room updates
-		db.collection("rooms").doc(currentRoom)
+		db.collection("rooms").doc(currentGame.room)
 		.onSnapshot(function(snap) {
 	        if(snap.exists){
 		        //create a user if they have none
@@ -35,15 +35,14 @@ $(document).ready(function() {
 			window.location.href = "index.html";
 		}
 	}else{
-		//no room given, redirect!
-		window.location.href = "index.html";
+		window.location.href = "index.html"; //no room given, redirect!
 	}	
 
 	var randomTekstje=[
 		"Wow zo realistisch!",
 		"Goed gevonden!",
 		"Dit is eigenlijk het omgekeerde van de mol maar dan met woorden. Ofzoiets",
-		"Als dat geen punten opleverd weet ik het ook niet meer...",
+		"Als dat geen punten oplevert weet ik het ook niet meer...",
 		"Kanshebber voor de originaliteitsprijs!",
 		"Oei daar stond wel een spellingsfoutje in precies... Neenee mopje",
 		"Niet slecht, maar ook ni top.",
@@ -52,14 +51,12 @@ $(document).ready(function() {
 		"Super goed gedaan, wow!",
 		"Hierna nog een rondje?",
 		"*BIEP BIEP BLIEP BLOP BEDANKT*",
-		"So no one told you life was gonna be this way"
+		"So no one told you life was gonna be this way",
+		"5 punten voor Griffoendor!"
 	];
 
-	//listener
-	var wordsListener;
-
 	//listen to all user updates & scores and shit	
-	db.collection("rooms").doc(currentRoom)
+	db.collection("rooms").doc(currentGame.room)
 	.collection("users").orderBy("createdDate","desc").where("allowed","==",true)
 	.onSnapshot(function(snap) {
     	var userHtml="";
@@ -69,7 +66,7 @@ $(document).ready(function() {
         		"username":doc.data().username,
         		"punten":doc.data().punten,
         	};
-        	userHtml+=`<div class="${currentWordOwner==doc.id ? "wordOwner":""}" data-userid="${doc.id}" title="${doc.data().username}">
+        	userHtml+=`<div class="${currentGame.wordOwner==doc.id ? "wordOwner":""}" data-userid="${doc.id}" title="${doc.data().username}">
                         <h3>${doc.data().username} ${doc.id == me ?" (jezelf)":''}</h3><h4 class="text-muted score">${doc.data().punten}</h4>
                         <div class="checkmark"><svg class="bi bi-check-circle" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3-3a.5.5 0 11.708-.708L8 9.293l6.646-6.647a.5.5 0 01.708 0z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M8 2.5A5.5 5.5 0 1013.5 8a.5.5 0 011 0 6.5 6.5 0 11-3.25-5.63.5.5 0 11-.5.865A5.472 5.472 0 008 2.5z" clip-rule="evenodd"></path></svg></div>
                     </div>`;
@@ -79,9 +76,8 @@ $(document).ready(function() {
 		handleError(error);
 	});
 
-	var submissionFunction;
     //listen to all words, select latest	
-	db.collection("rooms").doc(currentRoom)
+	db.collection("rooms").doc(currentGame.room)
 	.collection("woorden").orderBy("createdDate","desc").limit(1) //TODO: add create button if none is found
 	.onSnapshot(function(snap) {
     	var userHtml="";
@@ -93,16 +89,16 @@ $(document).ready(function() {
    			$(".deelnemers > div[data-userid='"+woorddata.wordOwner+"']").addClass('wordOwner');
    			$(".deelnemers > .checkmark").hide();
 
-   			currentWordID = doc.id;
-   			currentWordOwner = woorddata.wordOwner;
+   			currentGame.wordID = doc.id;
+   			currentGame.wordOwner = woorddata.wordOwner;
 
    			//reset
-   			if(currentStatus=="finishing" && woorddata.status=="new"){
+   			if(currentGame.status=="finishing" && woorddata.status=="new"){
    				$("#betekenisinput,#woordinput").val("");
    				selectedDefinition=false;
    			}
 
-   			currentStatus=woorddata.status;
+   			currentGame.status=woorddata.status;
 			woorddata.wordOwner == me ? $(".wordOwnerOnly").show() : $(".wordOwnerOnly").hide();
 
 
@@ -110,6 +106,7 @@ $(document).ready(function() {
    			//handle status
 	   		if(woorddata.status){
 
+	   			//need to quit a firebase listener, if it exists, destroy it
 				if(submissionFunction instanceof Function){
         			submissionFunction();
         		}
@@ -134,7 +131,7 @@ $(document).ready(function() {
 					$(".mode").hide();
 					$(".mode[data-mode='enterBetekenis']").show();
 
-					submissionFunction = db.collection("rooms").doc(currentRoom)
+					submissionFunction = db.collection("rooms").doc(currentGame.room)
 					.collection("woorden").doc(doc.id).collection("submissions").orderBy("randomOrder","desc")
 					.onSnapshot(function(submissions) {
 				        submissions.forEach(function(submission) {
@@ -156,7 +153,7 @@ $(document).ready(function() {
 					$("#nextRound").hide();
 					
 					//get all words -> for voting round
-		       		submissionFunction = db.collection("rooms").doc(currentRoom)
+		       		submissionFunction = db.collection("rooms").doc(currentGame.room)
 					.collection("woorden").doc(doc.id).collection("submissions").orderBy("randomOrder","desc")
 					.onSnapshot(function(submissions) {
 				    	var wordHtml="";
@@ -188,7 +185,7 @@ $(document).ready(function() {
 						    	event.preventDefault();
 						    	$("#wordExplanation > li").removeClass('selected');
 						    	selectedDefinition = $(this).attr("data-definitionid");
-						    	if(selectedDefinition!=me && currentWordOwner != me){
+						    	if(selectedDefinition!=me && currentGame.wordOwner != me){
 						    		$(this).addClass('selected');
 						    		$("#selectBetekenis").removeClass('disabled');
 						    	}else{
@@ -210,7 +207,7 @@ $(document).ready(function() {
 					$(".bottomText").hide();
 					$("#wordExplanation").text("");
 
-					submissionFunction = db.collection("rooms").doc(currentRoom)
+					submissionFunction = db.collection("rooms").doc(currentGame.room)
 					.collection("woorden").doc(doc.id).collection("submissions").orderBy("randomOrder","desc")
 					.onSnapshot(function(submissions) {
 				    	var wordHtml = "";
@@ -257,13 +254,13 @@ $(document).ready(function() {
 	    }).on('click', '#submitBetekenis', function(event) {
 	    	event.preventDefault();
 	    	if(!$(this).hasClass('disabled') && $("#betekenisinput").val().length !=0){
-				if(currentWordID!="" && currentStatus=="writing"){
+				if(currentGame.wordID!="" && currentGame.status=="writing"){
 					loading("#submitBetekenis");
 					//submit woord!
-					db.collection("rooms").doc(currentRoom)
-					.collection("woorden").doc(currentWordID)
+					db.collection("rooms").doc(currentGame.room)
+					.collection("woorden").doc(currentGame.wordID)
 					.collection("submissions").doc(me).set({
-						realDefinition: currentWordOwner == me ? true : false,
+						realDefinition: currentGame.wordOwner == me ? true : false,
 						uitleg: $("#betekenisinput").val(),
 						randomOrder: Math.random()
 					}).then(function(docRef){
@@ -288,10 +285,10 @@ $(document).ready(function() {
 	    }).on('click', '#submitWoord', function(event) {
 	    	event.preventDefault();
 	    	if(!$(this).hasClass('disabled') && $("#woordinput").val().length !=0){
-	    		if(currentWordID!="" && currentStatus=="new"){
+	    		if(currentGame.wordID!="" && currentGame.status=="new"){
 					//submit woord!
-					db.collection("rooms").doc(currentRoom)
-					.collection("woorden").doc(currentWordID)
+					db.collection("rooms").doc(currentGame.room)
+					.collection("woorden").doc(currentGame.wordID)
 					.update({
 						status: "writing",
 						woord: $("#woordinput").val()
@@ -303,10 +300,10 @@ $(document).ready(function() {
 	    	}
 	    }).on('click', '#resetWord > a', function(event) {
 	    	event.preventDefault();
-	    	if(currentWordID!=""){
+	    	if(currentGame.wordID!=""){
 				//submit woord!
-				db.collection("rooms").doc(currentRoom)
-				.collection("woorden").doc(currentWordID)
+				db.collection("rooms").doc(currentGame.room)
+				.collection("woorden").doc(currentGame.wordID)
 				.update({
 					status: "new",
 					woord: ""
@@ -316,10 +313,10 @@ $(document).ready(function() {
 			}
 	    }).on('click', '#toPickingRound', function(event) {
 	    	event.preventDefault();
-	    	if(currentWordOwner==me && currentStatus=="writing"){
+	    	if(currentGame.wordOwner==me && currentGame.status=="writing"){
 	    		//van writing naar picking ronde
-				db.collection("rooms").doc(currentRoom)
-				.collection("woorden").doc(currentWordID)
+				db.collection("rooms").doc(currentGame.room)
+				.collection("woorden").doc(currentGame.wordID)
 				.update({
 					status: "picking"
 				}).catch(function(error) {
@@ -328,10 +325,10 @@ $(document).ready(function() {
 			}
 	    }).on('click', '#nextStatus', function(event) {
 	    	event.preventDefault();
-	    	if(currentWordOwner==me && currentStatus=="picking"){
+	    	if(currentGame.wordOwner==me && currentGame.status=="picking"){
 	    		//van writing naar picking ronde
-				db.collection("rooms").doc(currentRoom)
-				.collection("woorden").doc(currentWordID)
+				db.collection("rooms").doc(currentGame.room)
+				.collection("woorden").doc(currentGame.wordID)
 				.update({
 					status: "finishing"
 				}).catch(function(error) {
@@ -340,10 +337,10 @@ $(document).ready(function() {
 			}
 	    }).on('click', '#selectBetekenis', function(event) {
 	    	event.preventDefault();
-	    	if(currentStatus=="picking" && selectedDefinition!=me){
+	    	if(currentGame.status=="picking" && selectedDefinition!=me){
 	    		if(selectedDefinition != false){
-					db.collection("rooms").doc(currentRoom)
-					.collection("woorden").doc(currentWordID)
+					db.collection("rooms").doc(currentGame.room)
+					.collection("woorden").doc(currentGame.wordID)
 					.collection("submissions").doc(selectedDefinition)
 					.update({
 						voted: firebase.firestore.FieldValue.arrayUnion(me)
@@ -355,8 +352,8 @@ $(document).ready(function() {
 	    }).on('click', '.deelnemers > div', function(event) {
 	    	event.preventDefault();
     		var selectedDeelnemer = $(this).attr("data-userid");
-	    	if(currentStatus=="finishing" && currentWordOwner==me && selectedDeelnemer!=me){
-	    		db.collection("rooms").doc(currentRoom)
+	    	if(currentGame.status=="finishing" && currentGame.wordOwner==me && selectedDeelnemer!=me){
+	    		db.collection("rooms").doc(currentGame.room)
 				.collection("woorden").add({
 					createdDate: new Date,
 					status: "new",
