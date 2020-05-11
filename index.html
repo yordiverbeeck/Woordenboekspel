@@ -4,6 +4,7 @@
 <head>
     <title>Woordenboekspel</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-131523699-2"></script>
 	<script>
@@ -44,13 +45,43 @@
 			border-top-left-radius: 0;
 			border-top-right-radius: 0;
 		}
+		#logo > img{
+			width: 100%;
+			max-width: 500px;
+		}
 		#logo > img:hover{
 			cursor: pointer;
+		}
+		#mobileOverlay{
+			position: absolute;
+			top: 0;
+			right: 0;
+			left: 0;
+			bottom: 0;
+			z-index: 10000;
+			background-color: rgba(0,0,0,0.9);
+			text-align: center;
+			color: white;
+			font-size: 30px;
+			display: none;
+			transition: 0.5s all;
+			padding: 10px;
+			padding-top: 35%;
+		}
+		@media (max-width: 800px){
+			#mobileOverlay{
+				display: block;
+			}
 		}
     </style>	
 </head>
 
 <body class="text-center">
+	<div id="mobileOverlay">
+        De mobiele versie is nog niet op punt!<br> Speel op eigen risico :) <br>
+        <small>Dit scherm gaat automatisch weg over 5 seconden...</small>
+    </div>
+
 	<div class="container">
 		<div class="row justify-content-md-center" id="logo">
 			<img class="mb-2" src="images/woordenboekspel.png" alt="" width="500">
@@ -291,6 +322,15 @@
 
 			$("#logo").click(function(event) {
 				$("#logo > img").toggle();
+			});
+
+			setTimeout(() => {  
+				$("#mobileOverlay").hide(500); 
+			}, 5000);
+
+			$(document).on('click', '#mobileOverlay', function(event) {
+				event.preventDefault();
+				$("#mobileOverlay").hide();			
 			});
 
 		});

@@ -496,5 +496,17 @@ $(document).ready(function() {
 			}, 1000);
 		});
 	}
+
+
+	setTimeout(() => {  
+		$("#mobileOverlay").hide(500);
+		$("#game").css('filter', 'blur(0)'); 
+	}, 5000);
+
+	$(document).on('click', '#mobileOverlay', function(event) {
+		event.preventDefault();
+		$("#mobileOverlay").hide();			
+		$("#game").css('filter', 'blur(0)'); 
+	});
 	
 });

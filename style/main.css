@@ -215,6 +215,23 @@ span.theword{
 		cursor: pointer;
 	}
 
+#mobileOverlay{
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	z-index: 10000;
+	background-color: rgba(0,0,0,0.9);
+	text-align: center;
+	color: white;
+	font-size: 30px;
+	display: none;
+	transition: 0.5s all;
+	padding: 10px;
+	padding-top: 35%;
+}
+
 @media (max-width: 800px){
 	#game > .maindisplay{
 		width: 90%;
@@ -234,6 +251,12 @@ span.theword{
 	#game > .people > div > div > div{
 		width: 33.3333%;
 		height: 65px;
+	}
+	#mobileOverlay{
+		display: block;
+	}
+	#game{
+		filter: blur(5px);
 	}
 }
 @media (max-width: 600px){
