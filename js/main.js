@@ -17,7 +17,7 @@ $(document).ready(function() {
 	        if(snap.exists){
 		        //create a user if they have none
 		        $("#roomname").text(snap.data().roomname);
-		   		$("#ronde").text("Ronde "+snap.data().huidigWoord);
+		   		$("#ronde").text("Woord "+snap.data().huidigWoord);
 		   		$("#toevoegen span").text(snap.data().shortroom);
 		   	}else{
 		   		alert("room does not exist, redirect");
@@ -60,17 +60,19 @@ $(document).ready(function() {
 	.collection("users").orderBy("createdDate","desc").where("allowed","==",true)
 	.onSnapshot(function(snap) {
     	var userHtml="";
-    	allUsers=[];
+    	allUsers={};
         snap.forEach(function(doc) {
         	allUsers[doc.id]={
         		"username":doc.data().username,
         		"punten":doc.data().punten,
+        		"createdDate":doc.data().createdDate.seconds
         	};
         	userHtml+=`<div class="${currentGame.wordOwner==doc.id ? "wordOwner":""}" data-userid="${doc.id}" title="${doc.data().username}">
                         <h3>${doc.data().username} ${doc.id == me ?" (jezelf)":''}</h3><h4 class="text-muted score">${doc.data().punten}</h4>
                         <div class="checkmark"><svg class="bi bi-check-circle" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3-3a.5.5 0 11.708-.708L8 9.293l6.646-6.647a.5.5 0 01.708 0z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M8 2.5A5.5 5.5 0 1013.5 8a.5.5 0 011 0 6.5 6.5 0 11-3.25-5.63.5.5 0 11-.5.865A5.472 5.472 0 008 2.5z" clip-rule="evenodd"></path></svg></div>
                     </div>`;
         });
+
         $(".deelnemers").html(userHtml);
     },function(error) {
 		handleError(error);
@@ -98,6 +100,8 @@ $(document).ready(function() {
    				selectedDefinition=false;
    			}
 
+			$(".tooltip").tooltip("hide");	
+
    			currentGame.status=woorddata.status;
 			woorddata.wordOwner == me ? $(".wordOwnerOnly").show() : $(".wordOwnerOnly").hide();
 
@@ -115,13 +119,13 @@ $(document).ready(function() {
 				if(woorddata.status == "new"){
 					$(".mode").hide();
 					if(woorddata.wordOwner == me){
-   						$("#word,span.theword").text("Even geduld...");
+   						$("#word,span.theword").text(allUsers[woorddata.wordOwner].username+" is aan het woord...");
 						$("#woordinput").val("");
 						$("#submitWoord").addClass('disabled');
 						$(".mode[data-mode='enterWord']").show();
 						
 					}else{
-   						$("#word,span.theword").text("Even geduld...");
+   						$("#word,span.theword").text(allUsers[woorddata.wordOwner].username+" is aan het woord...");
 						$(".mode[data-mode='wachten']").show();	
 					}
 
@@ -134,29 +138,51 @@ $(document).ready(function() {
 					submissionFunction = db.collection("rooms").doc(currentGame.room)
 					.collection("woorden").doc(doc.id).collection("submissions").orderBy("randomOrder","desc")
 					.onSnapshot(function(submissions) {
+						var countSubmissions=0;
 				        submissions.forEach(function(submission) {
+				        	countSubmissions++;
 				    		$(".deelnemers > div[data-userid='"+submission.id+"'] > div.checkmark").show();
 				       	});
+				       	if(countSubmissions==Object.keys(allUsers).length){
+				       		//ga automatisch door naar de volgende ronde
+				       		$("#awaitingPlayers").html("Iedereen is klaar! Over <b>5</b> seconden gaan we door naar de volgende ronde!");
 
+				       		ProgressCountdown(5,"#awaitingPlayers>b").then(val => {
+				       			if(currentGame.wordOwner==me && currentGame.status=="writing"){
+
+						    		//van writing naar picking ronde
+									db.collection("rooms").doc(currentGame.room)
+									.collection("woorden").doc(currentGame.wordID)
+									.update({
+										status: "picking"
+									}).catch(function(error) {
+										handleError(error);
+									});
+								}
+				       		})
+				       	}else{
+				       		//update het nummertje
+				       		$("#awaitingPlayers").html("Al <b>"+(countSubmissions)+"</b> van de <b>"+Object.keys(allUsers).length+"</b> spelers zijn klaar... Nog even wachten op de rest.");
+				       	}
+				       
 				    },function(error) {
 						handleError(error);
 					});
-
 
 				//PICKING status
 				}else if(woorddata.status == "picking"){
    					$("#word,span.theword").text(woorddata.woord);
 					$(".mode").hide();
-					$(".mode[data-mode='displayWords']").show();
+					$(".mode[data-mode='displayWordsPicking']").show();
 					$("#selectBetekenis").addClass('disabled');
-					$("#wordExplanation").text("");
-					$("#nextRound").hide();
+					$("#wordExplanationPicking").text("");
 					
 					//get all words -> for voting round
 		       		submissionFunction = db.collection("rooms").doc(currentGame.room)
 					.collection("woorden").doc(doc.id).collection("submissions").orderBy("randomOrder","desc")
 					.onSnapshot(function(submissions) {
 				    	var wordHtml="";
+				    	var votedTotal=0;
 				    	voted=false;
 				        submissions.forEach(function(submission) {
 				    		var data=submission.data();
@@ -167,23 +193,27 @@ $(document).ready(function() {
 				    		//if user already voted, hide button
 							voted || woorddata.wordOwner == me ? $("#selectBetekenis").hide() : $("#selectBetekenis").show();
 
-				       		wordHtml+=`<li class="${selectedDefinition == submission.id ? "selected": ""}" data-definitionid="${submission.id}">${data.uitleg} ${submission.id==me?" (Jouw definitie)":""} `;
+				       		wordHtml+=`<li class="${selectedDefinition == submission.id ? "selected": ""} ${data.voted && data.voted.includes(me) ? "selected" : ""}" data-definitionid="${submission.id}">${data.uitleg} ${submission.id==me?" (Jouw definitie)":""} `;
 		       				if(data.voted){
-					       		if(data.voted.length == 1){
-									wordHtml+=`<span class="badge badge-primary"> (1 Stem)</span>`;
-					       		}else if(data.voted.length > 1){
-									wordHtml+=`<span class="badge badge-primary">(${data.voted.length} Stemmen)</span>`;
-					       		}
-					       	}
+					       		votedTotal+=data.voted.length;
+					       		data.voted.forEach(function(index,val) {
+									$(".deelnemers > div[data-userid='"+index+"'] > div.checkmark").show();
+					       		})
+				       		}
 				       		wordHtml+=`</li>`;
 				       	});
+				       	if(votedTotal != Object.keys(allUsers).length-1){
+				       		$("#votedTotal").html("Al <b>"+votedTotal+"</b> van de <b>"+(Object.keys(allUsers).length-1)+"</b> stemmen binnen...")
+				       	}else{
+				       		$("#votedTotal").html("Iedereen heeft gestemd!");
+				       	}
 
-				       	$("#wordExplanation").html(wordHtml);
+				       	$("#wordExplanationPicking").html(wordHtml);
 
 				       	if(woorddata.wordOwner != me || voted!=true){
-					       	$("#wordExplanation > li").click(function(event) {
+					       	$("#wordExplanationPicking > li").click(function(event) {
 						    	event.preventDefault();
-						    	$("#wordExplanation > li").removeClass('selected');
+						    	$("#wordExplanationPicking > li").removeClass('selected');
 						    	selectedDefinition = $(this).attr("data-definitionid");
 						    	if(selectedDefinition!=me && currentGame.wordOwner != me){
 						    		$(this).addClass('selected');
@@ -202,10 +232,10 @@ $(document).ready(function() {
 				}else if(doc.data().status == "finishing"){
    					$("#word,span.theword").text(doc.data().woord);
 					$(".mode").hide();
-					$(".mode[data-mode='displayWords']").show();
+					$(".mode[data-mode='displayWordsFinishing']").show();
 					$("#selectBetekenis").hide();
 					$(".bottomText").hide();
-					$("#wordExplanation").text("");
+					$("#wordExplanationFinishing").text("");
 
 					submissionFunction = db.collection("rooms").doc(currentGame.room)
 					.collection("woorden").doc(doc.id).collection("submissions").orderBy("randomOrder","desc")
@@ -215,18 +245,34 @@ $(document).ready(function() {
 				    		var data = submission.data();
 				       		wordHtml += `<li class="${data.realDefinition ? "correct": ""}" data-definitionid="${submission.id}">${data.uitleg} `;
 		       				if(data.voted){
+		       					var personen = new Array();
+		       					data.voted.forEach(function(index,val){
+		       						personen.push(allUsers[index].username);
+		       					});
+		       					var personenShow = personen.join(", ");
+
 					       		if(data.voted.length == 1){
-									wordHtml += `<span class="badge badge-primary"> (1 Stem)</span>`;
+									wordHtml += `<span class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="${personenShow}"> (1 Stem)</span>`;
 					       		}else if(data.voted.length > 1){
-									wordHtml += `<span class="badge badge-primary">(${data.voted.length} Stemmen)</span>`;
+									wordHtml += `<span class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="${personenShow}">(${data.voted.length} Stemmen)</span>`;
 					       		}
 					       	}
-					       	wordHtml += `<span class="text-muted">Door ${allUsers[submission.id].username}</span>`;
+					       	wordHtml += `<span class="text-muted">Door <b>${allUsers[submission.id].username}</b></span>`;
 				       		wordHtml += `</li>`;
 				       	});
 
-				       	$("#wordExplanation").html(wordHtml);
-				       	if(woorddata.wordOwner == me) $("#nextRound").show();
+				       	$("#wordExplanationFinishing").html(wordHtml);
+
+				       	$("#nextRoundCountdown").html("Over <b>30</b> seconden gaan we door naar de volgende ronde.").show();
+
+			       		ProgressCountdown(30,"#nextRoundCountdown>b").then(val => {
+   							toNextRound();
+			       		})
+
+				       	$('.badge[data-toggle="tooltip"]').tooltip();
+				       	if(woorddata.wordOwner == me){
+				       		$("#nextRound").show();
+				       	} 
 				    },function(error) {
 						handleError(error);
 					});
@@ -311,7 +357,7 @@ $(document).ready(function() {
 					handleError(error);
 				});
 			}
-	    }).on('click', '#toPickingRound', function(event) {
+	    }).on('click', '#toPickingRound > a', function(event) {
 	    	event.preventDefault();
 	    	if(currentGame.wordOwner==me && currentGame.status=="writing"){
 	    		//van writing naar picking ronde
@@ -352,7 +398,7 @@ $(document).ready(function() {
 	    }).on('click', '.deelnemers > div', function(event) {
 	    	event.preventDefault();
     		var selectedDeelnemer = $(this).attr("data-userid");
-	    	if(currentGame.status=="finishing" && currentGame.wordOwner==me && selectedDeelnemer!=me){
+	    	/*if(currentGame.status=="finishing" && currentGame.wordOwner==me && selectedDeelnemer!=me){
 	    		db.collection("rooms").doc(currentGame.room)
 				.collection("woorden").add({
 					createdDate: new Date,
@@ -362,10 +408,13 @@ $(document).ready(function() {
 				}).catch(function(error) {
 					handleError(error);
 				});
-	    	}
+	    	}*/
 	    }).on('dblclick', '#toevoegen', function(event) {
 	    	event.preventDefault();
 	    	$("#toevoegen").toggleClass("hidden");
+	    }).on('click', '#nextRound > a', function(event) {
+	    	event.preventDefault();
+	    	toNextRound();
 	    });
 
     }
@@ -398,6 +447,31 @@ $(document).ready(function() {
     	console.log(error);
     }
 
+    function toNextRound(){
+    	if(currentGame.status=="finishing" && currentGame.wordOwner==me){
+    		var allUsersIDsSortedByDate = [];
+    		Object.keys(allUsers).forEach((i,val) => {
+    			allUsersIDsSortedByDate.push(i);
+    		})
+    		var position = Object.keys(allUsers).indexOf(currentGame.wordOwner);
+    		if((position+1) >= (Object.keys(allUsers).length)){
+    			var nextperson = allUsersIDsSortedByDate[0];
+    		}else{
+    			var nextperson = allUsersIDsSortedByDate[position+1];
+    		}
+
+    		db.collection("rooms").doc(currentGame.room)
+				.collection("woorden").add({
+					createdDate: new Date,
+					status: "new",
+					woord: "",
+					wordOwner: nextperson
+				}).catch(function(error) {
+					handleError(error);
+				});
+    	}
+    }
+
 	//call when a user has sent a word
     function resetFields(){
     	$(".form-control").val("");
@@ -408,6 +482,19 @@ $(document).ready(function() {
 		vars[key] = value;
 		});
 		return vars;
+	}
+	function ProgressCountdown(timeleft, text) {
+		return new Promise((resolve, reject) => {
+			var countdownTimer = setInterval(() => {
+				timeleft--;
+				$(text).text(timeleft);
+
+				if (timeleft <= 0) {
+					clearInterval(countdownTimer);
+					resolve(true);
+				}
+			}, 1000);
+		});
 	}
 	
 });

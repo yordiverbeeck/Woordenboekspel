@@ -56,34 +56,34 @@ body {
 	overflow-x: hidden;
 	position: absolute;
 }
-#wordExplanation{
+#wordExplanationPicking,#wordExplanationFinishing{
 	padding: 10px 15px 20px ;
 	font-size: 1.5em;
 	line-height: 2.4em;
 }
-	#wordExplanation > li{
+	#wordExplanationPicking > li,#wordExplanationFinishing > li{
 		border-bottom: 1px solid #4ddaffa6;
 		list-style-position: inside;
 		padding: 0 10px;
 		position: relative;
 	}
-		#wordExplanation > li:last-of-type{
+		#wordExplanationPicking > li:last-of-type,#wordExplanationFinishing > li:last-of-type{
 			border-bottom: unset;
 		}
-		#wordExplanation > li:hover{
+		#wordExplanationPicking > li:hover,#wordExplanationFinishing > li:hover{
 			background-color: #fbfbfb;
 		    cursor: pointer;
 		}
-		#wordExplanation > li.selected{
+		#wordExplanationPicking > li.selected,#wordExplanationFinishing > li.selected{
 			background-color: #4ddaffa6;
 		}
-		#wordExplanation > li.correct{
+		#wordExplanationPicking > li.correct,#wordExplanationFinishing > li.correct{
 			background-color: #7fff92;
 		}
-		#wordExplanation > li > span.text-muted{
+		#wordExplanationPicking > li > span.text-muted,#wordExplanationFinishing > li > span.text-muted{
 			font-size: 12px;
 		}
-		#wordExplanation > li > .badge{
+		#wordExplanationPicking > li > .badge,#wordExplanationFinishing > li > .badge{
 			position: absolute;
 			top: 19px;
 			right: 10px;
