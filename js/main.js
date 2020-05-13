@@ -105,8 +105,6 @@ $(document).ready(function() {
    			currentGame.status=woorddata.status;
 			woorddata.wordOwner == me ? $(".wordOwnerOnly").show() : $(".wordOwnerOnly").hide();
 
-
-
    			//handle status
 	   		if(woorddata.status){
 
@@ -314,7 +312,11 @@ $(document).ready(function() {
 						$(".mode[data-mode='afterSubmit'] > p:first-of-type").text(randomTekstje[Math.floor(Math.random()*randomTekstje.length)]);
 						$(".mode[data-mode='afterSubmit']").show(300);
 						$("#submitBetekenis").text("Stuur op!");
-						$
+						gtag('event', 'action', {
+							'event_label': 'Game',
+							'event_category': 'SubmitBetekenis'
+						});
+
 					}).catch(function(error) {
 						handleError(error);
 						$("#submitBetekenis").text("Stuur op!");
@@ -392,6 +394,10 @@ $(document).ready(function() {
 						voted: firebase.firestore.FieldValue.arrayUnion(me)
 					}).catch(function(error) {
 						handleError(error);
+					});
+					gtag('event', 'action', {
+						'event_label': 'Game',
+						'event_category': 'SelectBetekenis'
 					});
 				}
 			}
@@ -496,7 +502,6 @@ $(document).ready(function() {
 			}, 1000);
 		});
 	}
-
 
 	setTimeout(() => {  
 		$("#mobileOverlay").hide(500);
