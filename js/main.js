@@ -61,19 +61,21 @@ $(document).ready(function() {
 	.onSnapshot(function(snap) {
     	var userHtml="";
     	allUsers={};
+    	$(".deelnemers").html("");
         snap.forEach(function(doc) {
         	allUsers[doc.id]={
         		"username":doc.data().username,
         		"punten":doc.data().punten,
         		"createdDate":doc.data().createdDate.seconds
         	};
-        	userHtml+=`<div class="${currentGame.wordOwner==doc.id ? "wordOwner":""}" data-userid="${doc.id}" title="${doc.data().username}">
-                        <h3>${doc.data().username} ${doc.id == me ?" (jezelf)":''}</h3><h4 class="text-muted score">${doc.data().punten}</h4>
-                        <div class="checkmark"><svg class="bi bi-check-circle" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3-3a.5.5 0 11.708-.708L8 9.293l6.646-6.647a.5.5 0 01.708 0z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M8 2.5A5.5 5.5 0 1013.5 8a.5.5 0 011 0 6.5 6.5 0 11-3.25-5.63.5.5 0 11-.5.865A5.472 5.472 0 008 2.5z" clip-rule="evenodd"></path></svg></div>
-                    </div>`;
+        	$(".deelnemers")
+        		.append($(`<div class="${currentGame.wordOwner==doc.id ? "wordOwner":""}" data-userid="${doc.id}" title="${doc.data().username}">`)
+        		.append($("<h3></h3>").text(`${doc.data().username} ${doc.id == me ?" (jezelf)":''}`))
+        		.append($("<h4></h4>").addClass('text-muted').addClass('score').text(doc.data().punten))
+        		.append(`<div class="checkmark"><svg class="bi bi-check-circle" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3-3a.5.5 0 11.708-.708L8 9.293l6.646-6.647a.5.5 0 01.708 0z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M8 2.5A5.5 5.5 0 1013.5 8a.5.5 0 011 0 6.5 6.5 0 11-3.25-5.63.5.5 0 11-.5.865A5.472 5.472 0 008 2.5z" clip-rule="evenodd"></path></svg></div>`));
+
         });
 
-        $(".deelnemers").html(userHtml);
     },function(error) {
 		handleError(error);
 	});
@@ -89,7 +91,7 @@ $(document).ready(function() {
 
    			$(".deelnemers > div").removeClass('wordOwner');
    			$(".deelnemers > div[data-userid='"+woorddata.wordOwner+"']").addClass('wordOwner');
-   			$(".deelnemers > .checkmark").hide();
+   			$(".deelnemers .checkmark").hide();
 
    			currentGame.wordID = doc.id;
    			currentGame.wordOwner = woorddata.wordOwner;
@@ -124,6 +126,7 @@ $(document).ready(function() {
 						
 					}else{
    						$("#word,span.theword").text(allUsers[woorddata.wordOwner].username+" is aan het woord...");
+   						$("[data-mode='wachten'] span.theword").text(allUsers[woorddata.wordOwner].username+"...");
 						$(".mode[data-mode='wachten']").show();	
 					}
 
@@ -179,9 +182,10 @@ $(document).ready(function() {
 		       		submissionFunction = db.collection("rooms").doc(currentGame.room)
 					.collection("woorden").doc(doc.id).collection("submissions").orderBy("randomOrder","desc")
 					.onSnapshot(function(submissions) {
-				    	var wordHtml="";
 				    	var votedTotal=0;
 				    	voted=false;
+					    $("#wordExplanationPicking").html("");
+				        
 				        submissions.forEach(function(submission) {
 				    		var data=submission.data();
 				    		if(data.voted && data.voted.includes(me)){
@@ -191,22 +195,24 @@ $(document).ready(function() {
 				    		//if user already voted, hide button
 							voted || woorddata.wordOwner == me ? $("#selectBetekenis").hide() : $("#selectBetekenis").show();
 
-				       		wordHtml+=`<li class="${selectedDefinition == submission.id ? "selected": ""} ${data.voted && data.voted.includes(me) ? "selected" : ""}" data-definitionid="${submission.id}">${data.uitleg} ${submission.id==me?" (Jouw definitie)":""} `;
-		       				if(data.voted){
+				    		var data = submission.data();
+				    		$("#wordExplanationPicking").append($(`<li class="${selectedDefinition == submission.id ? "selected": ""} ${data.voted && data.voted.includes(me) ? "selected" : ""}" data-definitionid="${submission.id}"></li>`).text(data.uitleg));
+
+					       	if(data.voted){
 					       		votedTotal+=data.voted.length;
 					       		data.voted.forEach(function(index,val) {
 									$(".deelnemers > div[data-userid='"+index+"'] > div.checkmark").show();
 					       		})
 				       		}
-				       		wordHtml+=`</li>`;
+
+				       		
 				       	});
+
 				       	if(votedTotal != Object.keys(allUsers).length-1){
 				       		$("#votedTotal").html("Al <b>"+votedTotal+"</b> van de <b>"+(Object.keys(allUsers).length-1)+"</b> stemmen binnen...")
 				       	}else{
 				       		$("#votedTotal").html("Iedereen heeft gestemd!");
 				       	}
-
-				       	$("#wordExplanationPicking").html(wordHtml);
 
 				       	if(woorddata.wordOwner != me || voted!=true){
 					       	$("#wordExplanationPicking > li").click(function(event) {
@@ -238,10 +244,13 @@ $(document).ready(function() {
 					submissionFunction = db.collection("rooms").doc(currentGame.room)
 					.collection("woorden").doc(doc.id).collection("submissions").orderBy("randomOrder","desc")
 					.onSnapshot(function(submissions) {
-				    	var wordHtml = "";
+				       	$("#wordExplanationFinishing").html("");
 				        submissions.forEach(function(submission) {
 				    		var data = submission.data();
-				       		wordHtml += `<li class="${data.realDefinition ? "correct": ""}" data-definitionid="${submission.id}">${data.uitleg} `;
+				    		$("#wordExplanationFinishing").append(`<li class="${data.realDefinition ? "correct": ""}" data-definitionid="${submission.id}"></li>`)
+
+				    		$(`#wordExplanationFinishing > [data-definitionid="${submission.id}]"`).text(data.uitleg);
+
 		       				if(data.voted){
 		       					var personen = new Array();
 		       					data.voted.forEach(function(index,val){
@@ -250,22 +259,19 @@ $(document).ready(function() {
 		       					var personenShow = personen.join(", ");
 
 					       		if(data.voted.length == 1){
-									wordHtml += `<span class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="${personenShow}"> (1 Stem)</span>`;
+									$(`#wordExplanationFinishing > [data-definitionid="${submission.id}"]`).append(`<span class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="${personenShow}"> (1 Stem)</span>`);
 					       		}else if(data.voted.length > 1){
-									wordHtml += `<span class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="${personenShow}">(${data.voted.length} Stemmen)</span>`;
+									$(`#wordExplanationFinishing > [data-definitionid="${submission.id}"]`).append(`<span class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="${personenShow}">(${data.voted.length} Stemmen)</span>`);
 					       		}
 					       	}
-					       	wordHtml += `<span class="text-muted">Door <b>${allUsers[submission.id].username}</b></span>`;
-				       		wordHtml += `</li>`;
+					       $(`#wordExplanationFinishing > [data-definitionid="${submission.id}"]`).append($(`<span class="text-muted">Door </span>`).append($('<b></b>').text(allUsers[submission.id].username)));
 				       	});
 
-				       	$("#wordExplanationFinishing").html(wordHtml);
+				       	//$("#nextRoundCountdown").html("Over <b>30</b> seconden gaan we door naar de volgende ronde.").show();
 
-				       	$("#nextRoundCountdown").html("Over <b>30</b> seconden gaan we door naar de volgende ronde.").show();
-
-			       		ProgressCountdown(30,"#nextRoundCountdown>b").then(val => {
+			       		/*ProgressCountdown(30,"#nextRoundCountdown>b").then(val => {
    							toNextRound();
-			       		})
+			       		})*/
 
 				       	$('.badge[data-toggle="tooltip"]').tooltip();
 				       	if(woorddata.wordOwner == me){
@@ -404,7 +410,7 @@ $(document).ready(function() {
 	    }).on('click', '.deelnemers > div', function(event) {
 	    	event.preventDefault();
     		var selectedDeelnemer = $(this).attr("data-userid");
-	    	/*if(currentGame.status=="finishing" && currentGame.wordOwner==me && selectedDeelnemer!=me){
+	    	if(currentGame.status=="finishing" && currentGame.wordOwner==me && selectedDeelnemer!=me){
 	    		db.collection("rooms").doc(currentGame.room)
 				.collection("woorden").add({
 					createdDate: new Date,
@@ -414,7 +420,7 @@ $(document).ready(function() {
 				}).catch(function(error) {
 					handleError(error);
 				});
-	    	}*/
+	    	}
 	    }).on('dblclick', '#toevoegen', function(event) {
 	    	event.preventDefault();
 	    	$("#toevoegen").toggleClass("hidden");
