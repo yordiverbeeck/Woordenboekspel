@@ -247,9 +247,8 @@ $(document).ready(function() {
 				       	$("#wordExplanationFinishing").html("");
 				        submissions.forEach(function(submission) {
 				    		var data = submission.data();
-				    		$("#wordExplanationFinishing").append(`<li class="${data.realDefinition ? "correct": ""}" data-definitionid="${submission.id}"></li>`)
-
-				    		$(`#wordExplanationFinishing > [data-definitionid="${submission.id}]"`).text(data.uitleg);
+				    		
+				    		$("#wordExplanationFinishing").append($(`<li class="${data.realDefinition ? "correct": ""}" data-definitionid="${submission.id}"></li>`).text(data.uitleg))
 
 		       				if(data.voted){
 		       					var personen = new Array();
