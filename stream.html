@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Woordenboekspel - Kamer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131523699-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-131523699-2');
+    </script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style/mainstream.css">
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="js/mainstream.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <div id="game" class="">
+        <div id="ronde"></div>
+        <h5 id="roomname" class="display-5 text-center text-muted"></h5>
+        <h1 id="word" class="display-3 text-center">Loading...</h1>
+        <div class="maindisplay">
+            <div class="container mode" data-mode="displayWordsPicking">
+                <ol id="wordExplanationPicking">
+                </ol>
+
+                <p class="text-muted text-center bottomText playerOnly">Stemmen maar!</p>
+            </div>
+
+            <div class="container mode" data-mode="displayWordsFinishing">
+                <ol id="wordExplanationFinishing">
+                </ol>
+
+                <p id="nextRoundCountdown" class="text-muted text-center"></p>
+            </div>
+
+
+            <div class="container mode mt-3" data-mode="enterWord">
+
+            </div>
+
+            <div class="container mode mt-3" data-mode="enterBetekenis">
+                <div class="form-group">
+                    <label for="betekenisinput">Wat is de betekenis van <span class="theword"></span>?</label>
+                </div>
+            </div>
+            
+            <div class="container mode mt-3" data-mode="wachten">
+                <p>Even wachten op <span class="theword"></span></p>
+            </div>
+
+            <div class="container mode mt-3" data-mode="afterSubmit">
+                <p class="text-center font-italic font-weight-bold"></p>
+                <p class="text-center" id="awaitingPlayers">We wachten nog even op <b></b> van de <b></b> spelers...</p>
+            </div>
+
+        </div>
+        <div class="people">
+            <div class="left">
+                <div class="deelnemers">
+                    <div>
+                       <h3>Loading...</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="logooverlay">
+        <img class="mb-2" src="images/whoordenboekspel.png" alt="" width="500" style="display: none;">
+    </div>
+
+
+
+    <footer class="footer">
+        <div class="container position-absolute text-center" style="left:0;right:0">
+            <span class="text-muted">Door jouw liefste kapoen, <a href="https://www.instagram.com/yordinateur/">Yordi Verbeeck</a> van Sjarel</span><br>
+            <span class="text-muted">Geïnspireerd op de livestreams van Thomas Huyghe</span>
+        </div>
+
+    </footer>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+	https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-firestore.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyB1S5WKU4vVJHON2sEp1fk2hu0zH_Cxa0g",
+            authDomain: "woordenboekspel-a120d.firebaseapp.com",
+            databaseURL: "https://woordenboekspel-a120d.firebaseio.com",
+            projectId: "woordenboekspel-a120d",
+            storageBucket: "woordenboekspel-a120d.appspot.com",
+            messagingSenderId: "6191639396",
+            appId: "1:6191639396:web:9cbdf498bdc2fea47e6871",
+            measurementId: "G-X1MWL08VFS"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+        var db = firebase.firestore();
+    </script>
+</body>
+
+</html>
