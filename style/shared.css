@@ -1,0 +1,261 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+html,
+body {
+    height: 100%;
+}
+body {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #f5f5f5;
+    position: relative;
+}
+
+/* .btn-primary{
+	background-color: #3f00ff;
+	border-color: #3f00ff;
+}
+.btn-primary:hover{
+	background-color: #5e29ff;
+	border-color: #5e29ff;
+}
+*/
+
+.btn.btn-link {
+    color: #4ddaff;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40px; /* Set the fixed height of the footer here */
+    line-height: 17px; /* Vertically center the text there */
+    /* background-color: #efefef; */
+    font-size: 10px;
+}
+
+/*----- SPEL -----*/
+#game {
+    display: block;
+    width: 100%;
+    height: 100vh;
+}
+#game > .maindisplay {
+    background-color: white;
+    width: 70%;
+    right: 5%;
+    top: 120px;
+    height: 80%;
+    min-width: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: absolute;
+}
+#wordExplanationPicking,
+#wordExplanationFinishing {
+    padding: 10px 15px 20px;
+    font-size: 1.5em;
+    line-height: 2.4em;
+}
+#wordExplanationPicking > li,
+#wordExplanationFinishing > li {
+    border-bottom: 1px solid #4ddaffa6;
+    list-style-position: inside;
+    padding: 0 10px;
+    position: relative;
+}
+#wordExplanationPicking > li:last-of-type,
+#wordExplanationFinishing > li:last-of-type {
+    border-bottom: unset;
+}
+#wordExplanationPicking > li:hover,
+#wordExplanationFinishing > li:hover {
+    background-color: #fbfbfb;
+    cursor: pointer;
+}
+#wordExplanationPicking > li.selected,
+#wordExplanationFinishing > li.selected {
+    background-color: #4ddaffa6;
+}
+#wordExplanationPicking > li.correct,
+#wordExplanationFinishing > li.correct {
+    background-color: #7fff92;
+}
+#wordExplanationPicking > li > span.text-muted,
+#wordExplanationFinishing > li > span.text-muted {
+    font-size: 12px;
+}
+#wordExplanationPicking > li > .badge,
+#wordExplanationFinishing > li > .badge {
+    position: absolute;
+    top: 19px;
+    right: 10px;
+}
+#word {
+    margin-top: 30px;
+}
+#ronde {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px 10px;
+    background-color: #aaa;
+    font-weight: 700;
+    color: #424242;
+    opacity: 0.8;
+    border-bottom-left-radius: 10px;
+}
+
+#game > .maindisplay > .mode[data-mode="enterBetekenis"] > .form-group {
+    width: 100%;
+    padding: 15px;
+}
+
+#game > .people {
+    height: 80%;
+    top: 120px;
+    position: absolute;
+    display: block;
+    width: 25%;
+    padding: 0 30px;
+    overflow-y: auto;
+    /* background-color: grey; */
+}
+#game > .people > div {
+    position: relative;
+    height: fit-content;
+    display: grid;
+}
+#game > .people > div > div > div {
+    width: 100%;
+    display: inline-block;
+    float: left;
+    position: relative;
+    height: 75px;
+}
+div.wordOwner {
+    background-color: #007bff;
+    border-radius: 8px;
+}
+#game > .people > div > div > div.wordOwner > h3,
+#game > .people > div > div > div.wordOwner > h4 {
+    color: white !important;
+}
+#game > .people > div > div > div > h3 {
+    line-height: 75px;
+    top: 0;
+    left: 0;
+    right: 0;
+    text-align: left;
+    position: absolute;
+    z-index: 1000;
+    width: calc(100% - 30px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 0 10px;
+}
+#game > .people > div > div > div > h4.score {
+    line-height: 75px;
+    right: 0;
+    position: absolute;
+    z-index: 1000;
+    text-align: right;
+    padding: 0 10px;
+    width: 50px;
+    font-weight: 700;
+}
+#game > .people > div > div > div > div.checkmark {
+    position: absolute;
+    top: 25px;
+    height: 30px;
+    right: -25px;
+    color: #007bff;
+    display: none;
+}
+.deelnemers > div:hover {
+    cursor: pointer;
+}
+
+span.theword {
+    font-weight: 700;
+}
+.form-group > label {
+    text-align: center;
+    width: 100%;
+}
+.disabled:hover {
+    cursor: default;
+}
+.btn-submit {
+    width: 50%;
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}
+.wordOwnerOnly {
+    display: none;
+}
+.bottomText {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    display: none;
+}
+.mode {
+    display: none;
+}
+#roomname {
+    display: none;
+}
+#toevoegen {
+    transition: 0.5s all linear;
+}
+
+#toevoegen.hidden {
+    opacity: 0.9;
+    filter: blur(5px);
+}
+
+#toevoegen:hover {
+    cursor: pointer;
+}
+
+@media (max-width: 800px) {
+    #game > .maindisplay {
+        width: 90%;
+        min-width: unset;
+    }
+    #game > .people {
+        position: absolute;
+        height: 150px;
+        bottom: 40px;
+        width: 100%;
+        top: unset;
+        padding: unset;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        background-color: white;
+    }
+    #game > .people > div > div > div {
+        width: 33.3333%;
+        height: 65px;
+    }
+    #game {
+        filter: blur(5px);
+    }
+}
+@media (max-width: 600px) {
+    #game > .people > div > div > div {
+        width: 50%;
+    }
+}
