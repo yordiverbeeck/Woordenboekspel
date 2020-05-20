@@ -69,9 +69,9 @@ $(document).ready(function() {
         		"createdDate":doc.data().createdDate.seconds
         	};
         	$(".deelnemers")
-        		.append($(`<div class="${currentGame.wordOwner==doc.id ? "wordOwner":""}" data-userid="${doc.id}" title="${doc.data().username}">`)
-        		.append($("<h3></h3>").text(`${doc.data().username} ${doc.id == me ?" (jezelf)":''}`))
-        		.append($("<h4></h4>").addClass('text-muted').addClass('score').text(doc.data().punten))
+        		.append($(`<li class="list-group-item d-flex justify-content-between align-items-center ${currentGame.wordOwner==doc.id ? "wordOwner":""}" data-userid="${doc.id}" title="${doc.data().username}">`)
+        		.append($("<h4></h4>").text(`${doc.data().username} ${doc.id == me ?" (ik)":''}`))
+        		.append($("<span></span>").addClass('badge badge-info score').text(doc.data().punten))
         		.append(`<div class="checkmark"><svg class="bi bi-check-circle" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3-3a.5.5 0 11.708-.708L8 9.293l6.646-6.647a.5.5 0 01.708 0z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M8 2.5A5.5 5.5 0 1013.5 8a.5.5 0 011 0 6.5 6.5 0 11-3.25-5.63.5.5 0 11-.5.865A5.472 5.472 0 008 2.5z" clip-rule="evenodd"></path></svg></div>`));
 
         });
@@ -142,7 +142,7 @@ $(document).ready(function() {
 						var countSubmissions=0;
 				        submissions.forEach(function(submission) {
 				        	countSubmissions++;
-				    		$(".deelnemers > div[data-userid='"+submission.id+"'] > div.checkmark").show();
+				    		$(".deelnemers > li[data-userid='"+submission.id+"'] > div.checkmark").show();
 				       	});
 				       	if(countSubmissions==Object.keys(allUsers).length){
 				       		//ga automatisch door naar de volgende ronde
@@ -201,7 +201,7 @@ $(document).ready(function() {
 					       	if(data.voted){
 					       		votedTotal+=data.voted.length;
 					       		data.voted.forEach(function(index,val) {
-									$(".deelnemers > div[data-userid='"+index+"'] > div.checkmark").show();
+									$(".deelnemers > li[data-userid='"+index+"'] > div.checkmark").show();
 					       		})
 				       		}
 
