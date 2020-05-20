@@ -15,8 +15,8 @@
     </script>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="style/shared.css">
-    <link rel="stylesheet" type="text/css" href="style/main.css">
+    <link rel="stylesheet" type="text/css" href="style/kamer.css">
+    <!--<link rel="stylesheet" type="text/css" href="style/main.css">-->
     <script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -25,86 +25,92 @@
 </head>
 
 <body>
-    <div id="mobileOverlay">
-        De mobiele versie is nog niet op punt! <br> Speel dus op eigen risico :) <br>
-        <small>Dit scherm gaat weg over 5 seconden...</small>
+
+
+    <button class="btn btn-primary" id="ronde"></button>
+    <div class="row justify-content-md-center pt-5" id="logo">
+        <img class="mb-2" src="images/woordenboekspel.png" alt="" width="500">
     </div>
-    <div id="game" class="">
-        <div id="ronde"></div>
-        <h5 id="roomname" class="display-5 text-center text-muted"></h5>
-        <h1 id="word" class="display-3 text-center">Loading...</h1>
-        <div class="maindisplay">
-            <div class="container mode" data-mode="displayWordsPicking">
-                <ol id="wordExplanationPicking">
-                </ol>
-
-                <div id="selectBetekenis" class="btn btn-primary text-center btn-submit disabled" data-toggle="tooltip" data-placement="bottom" title="De tafel plakt na het klikken op deze knop!">Stuur op!</div>
-
-                <p class="text-muted text-center wordOwnerOnly">Omdat jij het woord gekozen hebt, kan je zelf niet stemmen.</p>
-
-                <div id="votedTotal" class=" text-center btn-submit"></div>
-
-                <div id="nextStatus" class="btn btn-primary text-center btn-submit wordOwnerOnly bottomText" data-toggle="tooltip" data-placement="top" title="Iedereen ready?">Klik hier om de waarheid te ontmaskeren!</div>
-
-                <p class="text-muted text-center bottomText playerOnly">Stemmen maar!</p>
-            </div>
-
-            <div class="container mode" data-mode="displayWordsFinishing">
-                <ol id="wordExplanationFinishing">
-                </ol>
-
-                <p id="nextRoundCountdown" class="text-muted text-center"></p>
-
-                <p id="nextRound" class="text-muted text-center wordOwnerOnly"><a href="#">Klik hier</a> om de volgende ronde te beginnen <br>OF duid links in de lijst een volgende persoon aan.</p>
-
-            </div>
-
-
-            <div class="container mode mt-3" data-mode="enterWord">
-                <div class="form-group">
-                    <label for="woordinput">Het is nu aan jou! Wat is het volgende woord?</label>
-                    <textarea class="form-control" id="woordinput" rows="1"></textarea>
-                </div>
-                <div id="submitWoord" class="btn btn-primary btn-submit text-center disabled" data-toggle="tooltip" data-placement="bottom" title="Ben je zeker?">Stuur op!</div>
-            </div>
-
-            <div class="container mode mt-3" data-mode="enterBetekenis">
-                <div class="form-group">
-                    <label for="betekenisinput">Wat is de betekenis van <span class="theword"></span>?</label>
-                    <textarea class="form-control" id="betekenisinput" rows="3"></textarea>
-                </div>
-
-                <p class="text-muted text-center wordOwnerOnly" id="resetWord">Let op! Omdat jij het woord gekozen hebt, moet je de echte betekenis meedelen. Anders heeft dit spel geen nut.</p>
-
-                <div id="submitBetekenis" class="btn btn-primary btn-submit text-center disabled" data-toggle="tooltip" data-placement="bottom" title="Je kan dit later niet meer veranderen!">Stuur op!</div>
-
-
-                <p class="text-muted text-center wordOwnerOnly bottomText" id="resetWord">Als ze het woord al kennen, <a href="#" >klik dan hier</a> om een ander woord te kiezen.</p>
-            </div>
-            
-            <div class="container mode mt-3" data-mode="wachten">
-                <p>Even wachten op <span class="theword"></span></p>
-            </div>
-
-            <div class="container mode mt-3" data-mode="afterSubmit">
-                <p class="text-center font-italic font-weight-bold"></p>
-                <p class="text-center" id="awaitingPlayers">We wachten nog even op <b></b> van de <b></b> spelers...</p>
-
-                <div id="toPickingRound" class=" text-muted text-center bottomText wordOwnerOnly">Geen tijd om te wachten op de rest? <a href="#">Klik hier</a> om manueel verder te gaan</div>
-            </div>
-
-        </div>
-        <div class="people">
-            <div class="left">
+    <hr>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5 id="roomname" class="display-5 text-center text-muted d-none"></h5>
                 <div class="deelnemers">
                     <div>
-                       <h3>Loading...</h3>
+                        <h3>Loading...</h3>
                     </div>
                 </div>
+                <hr>
                 <p id="toevoegen" class="text-muted text-center" data-toggle="tooltip" data-placement="bottom" title="Klik om de code te kopiëren, dubbelklik om ze te verbergen/tonen.">Geef deze code aan de andere deelnemers: <br><span class="font-weight-bold"></span></p>
+            </div>
+            <div class="col-md-8 text-center">
+                <div class="maindisplay">
+                    <h1 id="word" class="display-4">Loading...</h1>
+                    <div class="container mode" data-mode="displayWordsPicking">
+                        <ol id="wordExplanationPicking" class="text-left">
+                        </ol>
+
+                        <div id="selectBetekenis" class="btn btn-primary btn-submit disabled" data-toggle="tooltip" data-placement="bottom" title="De tafel plakt na het klikken op deze knop!">Stuur op!</div>
+
+                        <p class="text-muted text-center wordOwnerOnly">Omdat jij het woord gekozen hebt, kan je zelf niet stemmen.</p>
+
+                        <div id="votedTotal" class="btn-submit"></div>
+
+                        <div id="nextStatus" class="btn btn-primary btn-submit wordOwnerOnly bottomText" data-toggle="tooltip" data-placement="top" title="Iedereen ready?">Klik hier om de waarheid te ontmaskeren!</div>
+
+                        <p class="text-muted bottomText playerOnly">Stemmen maar!</p>
+                    </div>
+
+                    <div class="container mode" data-mode="displayWordsFinishing">
+                        <ol id="wordExplanationFinishing" class="text-left">
+                        </ol>
+
+                        <p id="nextRoundCountdown" class="text-muted"></p>
+
+                        <p id="nextRound" class="text-muted wordOwnerOnly"><a href="#">Klik hier</a> om de volgende ronde te beginnen <br>OF duid links in de lijst een volgende persoon aan.</p>
+
+                    </div>
+
+
+                    <div class="container mode mt-3" data-mode="enterWord">
+                        <div class="form-group">
+                            <label for="woordinput">Het is nu aan jou! Wat is het volgende woord?</label>
+                            <textarea class="form-control" id="woordinput" rows="1"></textarea>
+                        </div>
+                        <div id="submitWoord" class="btn btn-primary btn-submit text-center disabled" data-toggle="tooltip" data-placement="bottom" title="Ben je zeker?">Stuur op!</div>
+                    </div>
+
+                    <div class="container mode mt-3" data-mode="enterBetekenis">
+                        <div class="form-group">
+                            <label for="betekenisinput">Wat is de betekenis van <span class="theword"></span>?</label>
+                            <textarea class="form-control" id="betekenisinput" rows="3"></textarea>
+                        </div>
+
+                        <p class="text-muted wordOwnerOnly" id="resetWord">Let op! Omdat jij het woord gekozen hebt, moet je de echte betekenis meedelen. Anders heeft dit spel geen nut.</p>
+
+                        <div id="submitBetekenis" class="btn btn-primary btn-submit text-center disabled" data-toggle="tooltip" data-placement="bottom" title="Je kan dit later niet meer veranderen!">Stuur op!</div>
+
+
+                        <p class="text-muted wordOwnerOnly bottomText" id="resetWord">Als ze het woord al kennen, <a href="#" >klik dan hier</a> om een ander woord te kiezen.</p>
+                    </div>
+
+                    <div class="container mode mt-3" data-mode="wachten">
+                        <p>Even wachten op <span class="theword"></span></p>
+                    </div>
+
+                    <div class="container mode mt-3" data-mode="afterSubmit">
+                        <p class="font-italic font-weight-bold"></p>
+                        <p id="awaitingPlayers">We wachten nog even op <b></b> van de <b></b> spelers...</p>
+
+                        <div id="toPickingRound" class=" text-muted bottomText wordOwnerOnly">Geen tijd om te wachten op de rest? <a href="#">Klik hier</a> om manueel verder te gaan</div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
+
 
     <!-- Modal -->
     <div class="modal fade" id="watisdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

@@ -1,0 +1,77 @@
+.footer {
+    bottom: 0;
+    width: 100%;
+    height: 40px; /* Set the fixed height of the footer here */
+    line-height: 17px; /* Vertically center the text there */
+    /* background-color: #efefef; */
+    font-size: 10px;
+}
+#wordExplanationPicking,
+#wordExplanationFinishing {
+    padding: 0 15px 20px;
+    font-size: 1.4em;
+    line-height: 2em;
+}
+#wordExplanationPicking > li,
+#wordExplanationFinishing > li {
+    border-bottom: 1px solid #4ddaffa6;
+    list-style-position: inside;
+    padding: 0 10px;
+    position: relative;
+}
+#wordExplanationPicking > li:last-of-type,
+#wordExplanationFinishing > li:last-of-type {
+    border-bottom: unset;
+}
+#wordExplanationPicking > li:hover,
+#wordExplanationFinishing > li:hover {
+    background-color: #fbfbfb;
+    cursor: pointer;
+}
+#wordExplanationPicking > li.selected,
+#wordExplanationFinishing > li.selected {
+    background-color: #4ddaffa6;
+}
+#wordExplanationPicking > li.correct,
+#wordExplanationFinishing > li.correct {
+    background-color: #7fff92;
+    border-radius: 5px;
+}
+#wordExplanationPicking > li > span.text-muted,
+#wordExplanationFinishing > li > span.text-muted {
+    font-size: 12px;
+}
+#wordExplanationPicking > li > .badge,
+#wordExplanationFinishing > li > .badge {
+    position: absolute;
+    top: 19px;
+    right: 10px;
+}
+.checkmark {
+    position: absolute;
+    top: 20px;
+    height: 30px;
+    right: -25px;
+    color: #007bff;
+    display: none;
+}
+#ronde {
+    top:0;
+    right:0;
+    position: absolute;
+    border-radius: 0 0 0 5px
+}
+.wordOwner {
+    background-color: #007bff;
+    color: white;
+}
+@media (min-width: 1200px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl {
+        max-width: 1400px!important;
+    }
+}
+@media (min-width: 767px) {
+    .footer {
+        position: absolute;
+    }
+}
