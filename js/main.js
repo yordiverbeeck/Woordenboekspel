@@ -1,4 +1,5 @@
 $(document).ready(function() {
+	const svgcheckmark = `<svg class="bi bi-check-circle" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3-3a.5.5 0 11.708-.708L8 9.293l6.646-6.647a.5.5 0 01.708 0z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M8 2.5A5.5 5.5 0 1013.5 8a.5.5 0 011 0 6.5 6.5 0 11-3.25-5.63.5.5 0 11-.5.865A5.472 5.472 0 008 2.5z" clip-rule="evenodd"></path></svg>`;
 	var currentGame= new Object;
 	var allUsers = [];
 	var me = ""; //current user, you
@@ -38,23 +39,6 @@ $(document).ready(function() {
 		window.location.href = "index.html"; //no room given, redirect!
 	}	
 
-	var randomTekstje=[
-		"Wow zo realistisch!",
-		"Goed gevonden!",
-		"Dit is eigenlijk het omgekeerde van de mol maar dan met woorden. Ofzoiets",
-		"Als dat geen punten oplevert weet ik het ook niet meer...",
-		"Kanshebber voor de originaliteitsprijs!",
-		"Oei daar stond wel een spellingsfoutje in precies... Neenee mopje",
-		"Niet slecht, maar ook ni top.",
-		"Dit moet wel de beste zijn!",
-		"Zeg 3 keer het woord 'banaan' als je dit leest.",
-		"Super goed gedaan, wow!",
-		"Hierna nog een rondje?",
-		"*BIEP BIEP BLIEP BLOP BEDANKT*",
-		"So no one told you life was gonna be this way",
-		"5 punten voor Griffoendor!"
-	];
-
 	//listen to all user updates & scores and shit	
 	db.collection("rooms").doc(currentGame.room)
 	.collection("users").orderBy("createdDate","desc").where("allowed","==",true)
@@ -72,7 +56,8 @@ $(document).ready(function() {
         		.append($(`<div class="${currentGame.wordOwner==doc.id ? "wordOwner":""}" data-userid="${doc.id}" title="${doc.data().username}">`)
         		.append($("<h3></h3>").text(`${doc.data().username} ${doc.id == me ?" (jezelf)":''}`))
         		.append($("<h4></h4>").addClass('text-muted').addClass('score').text(doc.data().punten))
-        		.append(`<div class="checkmark"><svg class="bi bi-check-circle" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3-3a.5.5 0 11.708-.708L8 9.293l6.646-6.647a.5.5 0 01.708 0z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M8 2.5A5.5 5.5 0 1013.5 8a.5.5 0 011 0 6.5 6.5 0 11-3.25-5.63.5.5 0 11-.5.865A5.472 5.472 0 008 2.5z" clip-rule="evenodd"></path></svg></div>`));
+        		.append(`<div class="checkmark">${svgcheckmark}</div>`)
+        	);
 
         });
 
@@ -143,6 +128,10 @@ $(document).ready(function() {
 				        submissions.forEach(function(submission) {
 				        	countSubmissions++;
 				    		$(".deelnemers > div[data-userid='"+submission.id+"'] > div.checkmark").show();
+				    		if(submission.id == me){
+								$(".mode[data-mode='enterBetekenis']").hide();
+								$(".mode[data-mode='afterSubmit']").show();
+				    		}
 				       	});
 				       	if(countSubmissions==Object.keys(allUsers).length){
 				       		//ga automatisch door naar de volgende ronde
@@ -314,7 +303,6 @@ $(document).ready(function() {
 						randomOrder: Math.random()
 					}).then(function(docRef){
 						$(".mode").hide();						
-						$(".mode[data-mode='afterSubmit'] > p:first-of-type").text(randomTekstje[Math.floor(Math.random()*randomTekstje.length)]);
 						$(".mode[data-mode='afterSubmit']").show(300);
 						$("#submitBetekenis").text("Stuur op!");
 						gtag('event', 'action', {
